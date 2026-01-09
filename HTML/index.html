@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>FIRST Online</title>
+</head>
+<body class="d-flex min-vh-100">
+    <div class="container d-flex flex-column justify-content-center align-self-center bg-dark-subtle p-4 w-50">
+        <form action="/hub" method="post">
+            <p class="display-2 text-center mb-5">FIRST Online:<br> The Game</p>
+            
+            <div class="mb-4">
+                <div class="mb-3 row">
+                    <label for="inNome" class="col-sm-2 col-form-label">Nome</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inNome">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="inIP" class="col-sm-2 col-form-label">IP</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inIP">
+                    </div>
+                
+                </div>
+
+            </div>
+
+            <div class="d-grid gap-2 mb-5">
+                <button type="submit" class="btn btn-outline-success btn-lg">Gioca</button>
+
+            </div>
+
+        </form>
+
+        <hr class="border border-white border-3 opacity-50">
+
+        <div class="w-100">
+            <p class="fs-4">Come giocare</p>
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        🂡 1. Preparazione e Obiettivo del Gioco
+                    </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            A ogni giocatore vengono assegnate 8 carte; la prima carta viene girata per iniziare la pila degli scarti. L'obiettivo è semplice: liberarsi di tutte le proprie carte prima degli altri. Si gioca in senso orario e, a ogni turno, si deve scartare una carta che corrisponda per colore, numero o simbolo a quella in cima alla pila degli scarti; se non si può, si pesca una carta.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        🂿 2. Tipi di Carte e Funzioni Speciali
+                    </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            Oltre alle carte numeriche, esistono carte azione:
+                            <ol>
+                                <li>Pesca Due, che obbliga il giocatore successivo a pescare due carte e saltare il turno;</li>
+                                <li>Salta, che fa perdere il turno al giocatore successivo;</li>
+                                <li>Inverti, che cambia il verso del gioco;</li>
+                                <li>Jolly, che permette di scegliere il colore;</li>
+                                <li>Jolly Pesca Quattro, che consente di cambiare colore e obbliga il giocatore successivo a pescare quattro carte.</li>
+                            </ol>
+                            Le carte speciali possono essere giocate solo rispettando le regole di compatibilità o secondo le loro eccezioni.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        ♔ 3. Fine del Turno e Condizioni di Vittoria
+                    </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            Quando un giocatore resta con una sola carta deve dichiarare "FIRST!"; se non lo fa e un avversario lo nota prima che il turno successivo inizi, deve pescare due carte come penalità. La partita termina quando un giocatore scarta l'ultima carta.
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
