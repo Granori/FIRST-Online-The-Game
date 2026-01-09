@@ -4,6 +4,8 @@ import url from 'url';
 
 import http from 'http';
 import { Server } from 'socket.io';
+import { LobbyTavolo } from './script/class/LobbyTavolo.js';
+import { GiocatoreLobby } from './script/class/GiocatoreLobby';
 
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url)); //Alternativa per usare __dirname con ES6
@@ -72,4 +74,50 @@ const server = http.createServer(requestHandler);
 
 server.listen(PORT, HOSTNAME, () => {
     console.log(`Server in ascolto su http://${HOSTNAME}:${PORT}`);
+});
+
+let lobby = new LobbyTavolo(0, "Stanza di prova", 4);
+
+
+const io = new Server(server);
+io.on('connection', (socket) => {
+
+    //Socket istanziato
+    console.log('Nuovo client connesso: ' + socket.id);
+
+    //Ricevo username dal client
+    socket.on("connessione", (username) => {
+        console.log("Username ricevuto: " + username);
+        let response = null;
+        if (username.length < 3 || username.length > 12) {
+            response = false;
+        }
+        else {
+            //Pratica di connessione accettata
+            let giocatore = new GiocatoreLobby(username, socket.id, (lobby.giocatoriPresenti() == 0));
+            lobby.aggiungiGiocatore(giocatore);
+            console.log("Giocatori in lobby: " + lobby.giocatoriPresenti());
+
+            //Invio al client le info sulla lobby
+            response = {
+                lobbyName: lobby.nomeTavolo,
+                maxPlayers: lobby.maxGiocatori,
+                playersPresent: lobby.giocatoriPresenti(),
+                isHost: giocatore.isHost,
+                players: lobby.giocatori.map(g => g.getUsername())
+            };
+
+        }
+        socket.emit("esitoConnessione", response);
+        socket.broadcast.emit("nuovoGiocatore", lobby.giocatori.map(g => g.getUsername()));
+    })
+
+    
+
+    socket.on('disconnect', () => {
+        console.log('Client disconnesso: ' + socket.id);
+    });
+
+
+
 });
