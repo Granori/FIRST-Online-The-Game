@@ -1,0 +1,24 @@
+{
+  "name": "first-online-the-game",
+  "version": "1.0.0",
+  "description": "FIRST Online: The Game",
+  "homepage": "https://github.com/Granori/FIRST-Online-The-Game#readme",
+  "bugs": {
+    "url": "https://github.com/Granori/FIRST-Online-The-Game/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Granori/FIRST-Online-The-Game.git"
+  },
+  "license": "ISC",
+  "author": "Granori, smattia-rizzo",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "socket.io": "^4.8.3"
+  }
+}
