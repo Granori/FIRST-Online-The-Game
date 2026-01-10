@@ -5,7 +5,7 @@ import url from 'url';
 import http from 'http';
 import { Server } from 'socket.io';
 import { LobbyTavolo } from './script/class/LobbyTavolo.js';
-import { GiocatoreLobby } from './script/class/GiocatoreLobby';
+import { GiocatoreLobby } from './script/class/GiocatoreLobby.js';
 
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url)); //Alternativa per usare __dirname con ES6
