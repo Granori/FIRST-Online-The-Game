@@ -1,15 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import url from 'url';
-
 import http from 'http';
-import { Server } from 'socket.io';
-import { LobbyTavolo } from './script/class/LobbyTavolo.js';
-import { GiocatoreLobby } from './script/class/GiocatoreLobby.js';
-
+import { API_manager } from './source/api.js';
+//cookie, bcrypt, JWT per autenticazione
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url)); //Alternativa per usare __dirname con ES6
-const PORT = 3000;
+const PORT = 8080;
 const HOSTNAME = "127.0.0.1";
 
 const mimeTypes = {
@@ -24,50 +21,100 @@ const cartelle = {
     '.jpg': 'IMG'
 };
 
-async function requestHandler(req, res) {
-    console.log("\nRichiesta: " + req.url);
 
-    const objURL = new URL(req.url, `http://${req.headers.host}`);
-    console.log(objURL);
+/**
+ * Request handler principale del server
+ * @param {http.ClientRequest} request 
+ * @param {http.ServerResponse} response
+ */
+async function requestHandler(request, response) {
+    console.log("\nRichiesta: " + request.url);
+
+    const objURL = url.parse(request.url, true);
+
+    if (objURL.pathname.startsWith("/api")) {
+        //Gestione API
+        API_manager(request, response);
+        return;
+    }
 
     const estensione = path.extname(objURL.pathname == "/" ? "/index.html" : objURL.pathname);
     const cartella = cartelle[estensione];
     const nomeFile = path.basename(objURL.pathname == "/" ? "/index.html" : objURL.pathname);
 
     if (!cartella) {
-        res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end('Pagina non trovata');
+        response.writeHead(404, { 'Content-Type': 'text/plain' });
+        response.end('Pagina non trovata');
         return;
     }
 
-    serviFile(res, path.join(__dirname, cartella, nomeFile));
+    //Controllo token a tutte le pagine tranne /index.html e /register.html
+    if ((nomeFile !== "index.html" && nomeFile !== "register.html") && cartella === "HTML") {
+        // Richiesta interna al server per /api/validate_token
+        const options = {
+            hostname: HOSTNAME,
+            port: PORT,
+            path: '/api/validate_token',
+            method: 'POST',
+            headers: {
+                'Cookie': request.headers.cookie || ""
+            }
+        };
+
+        const req = http.request(options, (res) => {
+            let data = '';
+
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            res.on('end', () => {
+                const tokenValidJSON = JSON.parse(data);
+                if (!tokenValidJSON.token_valid) {
+                    response.writeHead(302, { 'Location': '/index.html' });
+                    response.end();
+                    return;
+                }
+            });
+        });
+
+        req.on('error', (e) => {
+            console.error('Errore durante la richiesta:', e.message);
+            response.writeHead(500, { 'Content-Type': 'text/plain' });
+            response.end('Errore interno del server');
+        });
+
+        req.end();
+    }
+
+    serviFile(response, path.join(__dirname, cartella, nomeFile));
 }
 
-async function serviFile(res, percorsoFile) {
+async function serviFile(response, percorsoFile) {
     console.log("Percorso file: " + percorsoFile);
 
     const fileStream = fs.createReadStream(percorsoFile);
 
     fileStream.on('open', () => {
         console.log('File aperto');
-        res.writeHead(200, { 'Content-Type': mimeTypes[path.extname(percorsoFile)] });
+        response.writeHead(200, { 'Content-Type': mimeTypes[path.extname(percorsoFile)] });
     });
 
     fileStream.on('error', (error) => {
         console.error('Errore nella lettura del file: ' + error.code + ' - ' + error.message);
 
         if (error.code === 'ENOENT') {
-            res.writeHead(404, { 'Content-Type': 'text/plain' });
-            res.end('File non trovato');
+            response.writeHead(404, { 'Content-Type': 'text/plain' });
+            response.end('File non trovato');
         }
         else {
-            res.writeHead(500, { 'Content-Type': 'text/plain' });
-            res.end('Errore interno del server');
+            response.writeHead(500, { 'Content-Type': 'text/plain' });
+            response.end('Errore interno del server');
         }
 
     });
     
-    fileStream.pipe(res);
+    fileStream.pipe(response);
 }
 
 const server = http.createServer(requestHandler);
@@ -75,7 +122,7 @@ const server = http.createServer(requestHandler);
 server.listen(PORT, HOSTNAME, () => {
     console.log(`Server in ascolto su http://${HOSTNAME}:${PORT}`);
 });
-
+/*
 let lobby = new LobbyTavolo(0, "Stanza di prova", 4);
 
 
@@ -121,3 +168,4 @@ io.on('connection', (socket) => {
 
 
 });
+*/

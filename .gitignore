@@ -1,3 +1,7 @@
+#Secret files
+db/*
+
+
 # Logs
 logs
 *.log

@@ -1,0 +1,114 @@
+import * as qs from 'querystring';
+
+import * as cookie from 'cookie';
+
+import { ClientRequest, ServerResponse } from 'http';
+import { db, insertUser, getUserByUsername } from './dbManager.js';
+import { generateToken, verifyToken } from './tokenManager.js';
+import { hashPassword, comparePassword } from './passwordManager.js';
+
+
+/**
+ * Handler per il login
+ * @param {ClientRequest} request 
+ * @param {ServerResponse} response 
+ */
+async function loginHandler(request, response) {
+    //Gestione login
+    //Tentativo di login
+
+    //Richiesta POST
+    let body = '';
+    request.on('data', (chunk) => {
+        console.log('Ricevuto chunk di dati: ' + chunk);
+        body += chunk;
+    });
+    request.on('end', async () => {
+        console.log('Body ricevuto: ' + body);
+        const data = qs.parse(body);
+        console.log("Tentativo di login per utente: " + data.username);
+        const user = getUserByUsername.get(data.username);
+        if (!user) {
+            //Utente non trovato
+            response.writeHead(401, { 'Content-Type': 'application/json' });
+            response.end(JSON.stringify({ login: false, message: 'Utente non trovato' }));
+            return;
+        } else {
+            //Utente trovato, verifico password
+            let passwordMatch = await comparePassword(data.password, user.password_hash);
+            if (!passwordMatch) {
+                //Password errata
+                response.writeHead(401, { 'Content-Type': 'application/json' });
+                response.end(JSON.stringify({ login: false, message: 'Utente o password errati' }));
+                return;
+            } else {
+                //Login riuscito, genero token
+                const token = await generateToken(user.id, user.username);
+                
+                //Genero cookie con la libreria cookie
+                const cookieAuth = cookie.serialize('auth_token', token, {
+                    httpOnly: true,
+                    secure: false, // Non uso https in locale
+                    maxAge: 2 * 60 * 60, // 2 ore
+                    path: '/',
+                    sameSite: 'lax',
+                    expires: new Date(Date.now() + 2 * 60 * 60 * 1000) // 2 ore
+                });
+                response.writeHead(302, {
+                    'Location': '/pagina.html',
+                    'Set-Cookie': cookieAuth
+                });
+                response.end();
+
+                //response.setHeader('Set-Cookie', cookieAuth);
+                //response.writeHead(200, { 'Content-Type': 'application/json' });
+                //response.end(JSON.stringify({ login: true, message: 'Login riuscito' , username: user.username}));
+                return;
+            }
+        }});
+}
+
+/**
+ * Handler per la registrazione
+ * @param {ClientRequest} request 
+ * @param {ServerResponse} response 
+ */
+async function registerHandler(request, response) {
+    //Gestione registrazione nuovo utente
+    //Richiesta POST
+    let body = '';
+    request.on('data', (chunk) => {
+        console.log('Ricevuto chunk di dati: ' + chunk);
+        body += chunk;
+    });
+    request.on('end', async () => {
+        console.log('Body ricevuto: ' + body);
+        const data = qs.parse(body);
+        //Registrazione nuovo utente
+        console.log("Tentativo di registrazione per utente: " + data.username);
+        const user = getUserByUsername.get(data.username);
+        if (user) {
+            //Utente già esistente
+            response.writeHead(409, { 'Content-Type': 'application/json' });
+            response.end(JSON.stringify({ register: false, message: 'Username già in uso' }));
+            return;
+        } else {
+            //Controllo username e password validi
+            //Username e password non vuoti, username con meno di 20 caratteri e password almeno 6 caratteri
+            if (!data.username || !data.password || data.password.length < 6 || data.username.length > 20) {
+                response.writeHead(400, { 'Content-Type': 'application/json' });
+                response.end(JSON.stringify({ register: false, message: 'Username o password non validi (min 6 caratteri, max 20 per username)' }));
+                return;
+            }
+
+
+            //Creo nuovo utente
+            const passwordHash = await hashPassword(data.password);
+            insertUser.run(data.username, passwordHash);
+            response.writeHead(201, { 'Content-Type': 'application/json' });
+            response.end(JSON.stringify({ register: true, message: 'Utente registrato con successo' }));
+            return;
+        }});
+}
+
+export { loginHandler, registerHandler };
