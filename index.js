@@ -85,7 +85,6 @@ async function requestHandler(request, response) {
         });
 
         req.end();
-        return;
     }
 
     serviFile(response, path.join(__dirname, cartella, nomeFile));

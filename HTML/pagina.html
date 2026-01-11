@@ -9,5 +9,24 @@
     <h1>Login successful</h1>
     <p>Se vedi questa pagina, il login è avvenuto con successo</p>
     <p>Token e cookie sono impostati con successo</p>
+    <p>Nome utente: <span id="username"></span></p>
+
+
+    <!--TODO: Essendo questa la prima pagina autenticata dopo il login,
+        le gui per creare nuove partite o partecipare potrebbero stare qui-->
+
+    <script>
+        const username = document.getElementById("username")
+
+        //Recupero utente via fetch (il cookie con il token viene inviato automaticamente per ogni richiesta fetch)
+        fetch('/api/user')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('username').innerHTML = data.user.username;
+        })
+        .catch(error => {
+            console.error('Non è stato possibile ottenere i dati utente', error);
+        });
+    </script>
 </body>
 </html>

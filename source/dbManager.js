@@ -12,6 +12,8 @@ db.prepare(`CREATE TABLE IF NOT EXISTS users (
 const insertUser = db.prepare(`INSERT INTO users (username, password_hash) VALUES (?, ?)`);
 //Query per ottenere un utente tramite username
 const getUserByUsername = db.prepare(`SELECT * FROM users WHERE username = ?`);
+//Query per ottenere un utente tramite id
+const getUserById = db.prepare(`SELECT * FROM users WHERE id = ?`);
 //Inserisco un utente di test se non esiste
 const testUser = getUserByUsername.get('testuser');
 if (!testUser) {
