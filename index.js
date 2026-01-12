@@ -71,7 +71,7 @@ async function requestHandler(request, response) {
             res.on('end', () => {
                 const tokenValidJSON = JSON.parse(data);
                 if (!tokenValidJSON.token_valid) {
-                    response.writeHead(302, { 'Location': '/index.html' });
+                    response.writeHead(302, { 'Location': '/login.html' });
                     response.end();
                     return;
                 }

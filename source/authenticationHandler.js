@@ -55,7 +55,7 @@ async function loginHandler(request, response) {
                     expires: new Date(Date.now() + 2 * 60 * 60 * 1000) // 2 ore
                 });
                 response.writeHead(302, {
-                    'Location': '/pagina.html',
+                    'Location': '/hub.html',
                     'Set-Cookie': cookieAuth
                 });
                 response.end();
