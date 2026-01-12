@@ -3,6 +3,7 @@ import path from 'path';
 import url from 'url';
 import http from 'http';
 import { API_manager } from './source/api.js';
+import { constrainedMemory } from 'process';
 //cookie, bcrypt, JWT per autenticazione
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url)); //Alternativa per usare __dirname con ES6
@@ -12,13 +13,17 @@ const HOSTNAME = "127.0.0.1";
 const mimeTypes = {
     '.html': 'text/html',
     '.js': 'text/javascript',
-    '.css': 'text/css'
+    '.css': 'text/css',
+    '.svg': 'image/svg+xml'
 };
 
 const cartelle = {
     '.html': 'HTML',
     '.css': 'CSS',
-    '.jpg': 'IMG'
+    '.jpg': 'IMG',
+    '.js' : 'JS',
+    '.png' : 'IMG',
+    '.svg': 'IMG'
 };
 
 
@@ -38,9 +43,9 @@ async function requestHandler(request, response) {
         return;
     }
 
-    const estensione = path.extname(objURL.pathname == "/" ? "/index.html" : objURL.pathname);
+    const estensione = path.extname(objURL.pathname == "/" ? "/login.html" : objURL.pathname);
     const cartella = cartelle[estensione];
-    const nomeFile = path.basename(objURL.pathname == "/" ? "/index.html" : objURL.pathname);
+    const nomeFile = path.basename(objURL.pathname == "/" ? "/login.html" : objURL.pathname);
 
     if (!cartella) {
         response.writeHead(404, { 'Content-Type': 'text/plain' });
@@ -48,8 +53,10 @@ async function requestHandler(request, response) {
         return;
     }
 
-    //Controllo token a tutte le pagine tranne /index.html e /register.html
-    if ((nomeFile !== "index.html" && nomeFile !== "register.html") && cartella === "HTML") {
+
+    //Controllo token a tutte le pagine tranne /login.html e /register.html
+    if ((nomeFile !== "login.html" && nomeFile !== "register.html") && cartella === "HTML") {
+        console.log("Richiesto controllo Token per richiesta: " + request.url)
         // Richiesta interna al server per /api/validate_token
         const options = {
             hostname: HOSTNAME,
@@ -60,31 +67,40 @@ async function requestHandler(request, response) {
                 'Cookie': request.headers.cookie || ""
             }
         };
+        console.log("Invio la richiesta")
+        // Usa una Promise per aspettare la risposta
+        const tokenValid = await new Promise((resolve, reject) => {
+            const req = http.request(options, (res) => {
+                let data = '';
 
-        const req = http.request(options, (res) => {
-            let data = '';
+                res.on('data', (chunk) => {
+                    data += chunk;
+                });
 
-            res.on('data', (chunk) => {
-                data += chunk;
+                res.on('end', () => {
+                    const tokenValidJSON = JSON.parse(data);
+                    if (!tokenValidJSON.token_valid) {
+                        console.log("Token non valido");
+                        resolve(false); // Token non valido
+                    } else {
+                        resolve(true); // Token valido
+                    }
+                });
             });
 
-            res.on('end', () => {
-                const tokenValidJSON = JSON.parse(data);
-                if (!tokenValidJSON.token_valid) {
-                    response.writeHead(302, { 'Location': '/login.html' });
-                    response.end();
-                    return;
-                }
+            req.on('error', (e) => {
+                console.error('Errore durante la richiesta:', e.message);
+                reject(e);
             });
+
+            req.end();
         });
 
-        req.on('error', (e) => {
-            console.error('Errore durante la richiesta:', e.message);
-            response.writeHead(500, { 'Content-Type': 'text/plain' });
-            response.end('Errore interno del server');
-        });
-
-        req.end();
+        if (!tokenValid) {
+            response.writeHead(302, { 'Location': '/login.html' });
+            response.end();
+            return;
+        }
     }
 
     serviFile(response, path.join(__dirname, cartella, nomeFile));

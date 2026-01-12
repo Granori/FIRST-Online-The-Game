@@ -10,10 +10,15 @@
     <div class="bg-white p-10 pb-0 w-full max-w-xl">
       <div class="pb-10 mb-10 border-b-4 border-gray-100">
         <h1 class="text-7xl font-normal text-center mb-20">FIRST Online:<span class="block">The Game</span></h1> 
-        <form class="text-center">
+        <form class="text-center" action="/api/login" method="post">
           <div class="flex items-center gap-4 justify-center mb-5">
             <label for="nickname" class="text-lg font-medium whitespace-nowrap"> Nome: </label>
-            <input id="nickname" type="text" class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Inserisci un nickname" /> 
+            <input id="nickname" type="text" class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Inserisci un nickname" name="username"/> 
+            
+          </div>
+          <div class="flex items-center gap-4 justify-center mb-5">
+            <label for="nickname" class="text-lg font-medium whitespace-nowrap"> Password: </label>
+            <input id="nickname" type="password" class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Inserisci la password"  name="password"/> 
             
           </div>
           <button class="bg-white border-2 border-green-400 p-2 px-10 rounded-xl hover:shadow-md hover:shadow-green-300 hover:bg-green-100 hover:border-green-100 transition-all duration-300">Gioca</button>
