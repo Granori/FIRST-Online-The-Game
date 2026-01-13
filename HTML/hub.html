@@ -7,26 +7,122 @@
     <title>first-online-sviluppohtml</title>
 </head>
 <body class="bg-gray-100">
+    <div id="overlayProfile" class="hidden fixed inset-0 z-20 bg-black/50 flex items-center justify-center">
+      <div class="flex flex-col bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-lg 
+            max-h-[90vh] overflow-y-auto z-30">
+        <h1 class="text-2xl sm:text-3xl">PROFILO</h1>
+
+        <div class="flex flex-1 flex-col justify-evenly">
+          <div class="flex items-center gap-4 sm:gap-10">
+            <h4 class="">Immagine profilo: </h1>
+              <div class="relative">
+                <button id="profileProfileImg" class="relative w-20 h-20 group">
+                  <!-- immagine profilo -->
+                  <img src="./cane1.jpg" alt="Profilo" class="w-full h-full rounded-full object-cover"/>
+                  
+                  <!-- icona -->
+                  <div class="hidden flex group-hover:flex cursor-pointer absolute inset-0 items-center m-auto justify-center bg-black/50 rounded-full">
+                    <img src="./IMG/edit_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" alt="cambia" class="w-8 h-8">
+                    
+                  </div>
+                </button>
+                <div id="dropdownImgProfile" class="hidden absolute min-w-45 left-1/2 -translate-x-1/2 top-full
+                sm:top-1/2 sm:-translate-y-1/2 sm:left-full sm:ml-25 
+                grid grid-cols-3 gap-3 p-3 bg-gray-900 rounded-xl shadow-xl">
+                  <button data-action="select-img" class="cursor-pointer group">
+                    <img src="./cane1.jpg" alt="Profilo" class="w-10 h-10 group-hover:ring-2 ring-white rounded-full object-cover"/>   
+
+                  </button>
+                  <button data-action="select-img" class="cursor-pointer group">
+                    <img src="./IMG/user.svg" alt="Profilo" class="w-10 h-10 group-hover:ring-2 ring-white rounded-full object-cover"/>   
+
+                  </button>
+                  <button class="cursor-pointer group">
+                    <img src="./cane1.jpg" alt="Profilo" class="w-10 h-10 group-hover:ring-2 ring-white rounded-full object-cover"/>   
+
+                  </button>
+                  <button class="cursor-pointer group">
+                    <img src="./cane1.jpg" alt="Profilo" class="w-10 h-10 group-hover:ring-2 ring-white rounded-full object-cover"/>   
+
+                  </button>
+                  <button class="cursor-pointer group">
+                    <img src="./cane1.jpg" alt="Profilo" class="w-10 h-10 group-hover:ring-2 ring-white rounded-full object-cover"/>   
+
+                  </button>
+                  <button class="cursor-pointer group">
+                    <img src="./cane1.jpg" alt="Profilo" class="w-10 h-10 group-hover:ring-2 ring-white rounded-full object-cover"/>   
+
+                  </button>
+                    
+
+                </div>
+
+              </div>
+
+  
+          </div>
+          <div>
+            <form id="formUsername" action="" method="post">
+              <div class="flex items-center space-x-10">
+                <label for="inNickname" class="whitespace-nowrap"> Nome: </label>
+                <input id="inNickname" name="username" value="NomeGiocatore" type="text" class="border border-gray-300 rounded-lg px-3 py-2 w-fit focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-200" disabled /> 
+                <button id="btnChangeUsername" type="button" class="border-amber-300 border-2 rounded-xl p-2 hover:bg-amber-100 hover:border-amber-100 hover:shadow-md hover:shadow-amber-200 cursor-pointer duration-200">Cambia</button>
+                <p class="hidden text-red-600">Nome non valido</p>
+              </div>
+              <div class="hidden flex justify-evenly mt-5">
+                <button type="submit" class="border-green-300 border-2 rounded-xl p-2 hover:bg-green-100 hover:border-green-100 hover:shadow-md hover:shadow-green-200 cursor-pointer duration-200">Conferma</button>
+                <button type="reset" class="border-red-300 border-2 rounded-xl p-2 hover:bg-red-100 hover:border-red-100 hover:shadow-md hover:shadow-red-200 cursor-pointer duration-200">Cancella</button>
+
+              </div>
+            </form>
+            
+  
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+
     <nav class="bg-gray-900 text-white w-full shadow">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="mx-auto px-4 py-3 flex items-center justify-between">
             <div class="text-xl font-semibold">
                 FIRST Online
             </div>
-            <button class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded">
-                Indietro
-            </button>
+            <div class="relative">
+              <button id="navbarProfileIMG" class="block">
+                  <img src="./cane1.jpg" alt="Profilo" class="w-12 h-12 rounded-full object-cover hover:ring-2 hover:shadow-md shadow-white"/>
+
+              </button>
+              <div id="dropdownMenu" class="hidden z-1 fixed sm:absolute left-0 sm:left-auto sm:right-0 w-screen sm:w-48 mt-2 py-2 bg-gray-800 sm:rounded shadow-lg">
+                  <ul>
+                    <li class="hover:bg-gray-700 py-1.5 px-4 cursor-pointer">
+                      <button data-action="profilo" type="button" class="w-full text-left cursor-pointer">Profilo</button>
+                    </li>
+                    <li class="hover:bg-gray-700 py-1.5 px-4 cursor-pointer">
+                      <button data-action="impostazioni" type="button" class="w-full text-left cursor-pointer">Impostazioni</button>
+                    </li>
+                    <li class="hover:bg-gray-700 py-1.5 px-4 cursor-pointer">
+                      <form action="/api/logout" method="post">
+                        <button type="submit" class="w-full text-left cursor-pointer">Logout</button>
+                      </form>
+                    </li>
+                  </ul>
+              </div>
+            </div>
 
         </div>
     </nav>
         
-    <div class="max-w-7xl mt-10 px-4 grid grid-cols-1 md:grid-cols-3 mx-auto gap-6">
+    <div class="mt-10 px-4 grid grid-cols-1 md:grid-cols-3 mx-auto gap-6">
 
   <!-- HUB STANZE (2/3) -->
       <div class="col-span-2">
 
         <!-- Barra di ricerca -->
         <div class="mb-4 flex justify-between items-center">
-          <h1 class="text-2xl font-bold text-gray-800 md:-ml-2 2xl:-ml-10">Stanze disponibili</h1>
+          <h1 class="text-2xl font-bold text-gray-800">Stanze disponibili</h1>
           <div class="">
             <label for="IDstanza" class="me-5">ID Stanza: </label>
             <input 
@@ -39,7 +135,7 @@
         </div>
 
         <!-- Contenitore scrollabile -->
-        <div class="h-125 overflow-y-auto border border-gray-300 rounded-lg shadow">
+        <div class="h-125 ms-0 md:ms-5 overflow-y-auto border border-gray-300 rounded-lg shadow">
 
           <table class="min-w-full bg-white">
             <colgroup> 
@@ -206,10 +302,10 @@
 
     <!-- PROFILO 1/3 -->
       <div class="col-span-1">
-        <div class="bg-white border border-gray-300 rounded-lg shadow p-6 text-center">
-          <img src="/user.svg" alt="Profilo" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover"/>
+        <div id="previewProfile" class="bg-white border border-gray-300 rounded-lg shadow p-6 text-center">
+          <img src="./cane1.jpg" alt="Profilo" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover"/>
 
-          <h2 id="username" class="text-xl font-semibold text-gray-800"></h2>
+          <h2 class="text-xl font-semibold text-gray-800">NomeGiocatore</h2>
 
         </div>
         <div class="bg-white border border-gray-300 mt-8 rounded-lg shadow p-5">
@@ -229,16 +325,6 @@
 
     </div>
     
-    <script>
-      fetch('/api/user')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('username').innerHTML = data.user.username;
-        })
-        .catch(error => {
-            console.error('Non è stato possibile ottenere i dati utente', error);
-      });
-      
-    </script>
+    <script src="hub.js"></script>
 </body>
 </html>
