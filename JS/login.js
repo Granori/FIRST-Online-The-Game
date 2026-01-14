@@ -4,6 +4,11 @@ const anchorMuovi = document.querySelectorAll("a.switch-move");
 const loginForm = document.getElementById("logForm");
 const registraForm = document.getElementById("regForm");
 
+const rgUsername = document.getElementById("rgUsername");
+const rgPassword = document.getElementById("rgPassword");
+const lgUsername = document.getElementById("lgUsername");
+const lgPassword = document.getElementById("lgPassword");
+
 const bottoniTendine = document.querySelectorAll("button.dropdown");
 
 bottoniTendine.forEach(btn => btn.addEventListener("click", () => {
@@ -62,8 +67,22 @@ anchorMuovi.forEach(anchor => {
         registraForm.classList.toggle("invisible");
         registraForm.classList.toggle("absolute");
 
+        rgUsername.value = "";
+        rgPassword.value = "";
+        lgUsername.value = "";
+        lgPassword.value = "";
+
         loginForm.classList.toggle("opacity-0");
         loginForm.classList.toggle("invisible");
         loginForm.classList.toggle("absolute");
     });
+
+});
+
+
+registraForm.addEventListener("submit", (e) => {
+    // e.preventDefault();
+});
+loginForm.addEventListener("submit", (e) => {
+    // e.preventDefault();
 });
