@@ -1,6 +1,6 @@
 #Secret files
 db/*
-
+.trash
 
 # Logs
 logs

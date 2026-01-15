@@ -1,13 +1,13 @@
-import * as qs from 'querystring';
-
 import * as cookie from 'cookie';
 
 import { ClientRequest, ServerResponse } from 'http';
-import { db, insertUser, getUserByUsername } from './dbManager.js';
-import { generateToken, verifyToken } from './tokenManager.js';
+import {insertUser, getUserByUsername } from './dbManager.js';
+import { generateToken} from './tokenManager.js';
 import { hashPassword, comparePassword } from './passwordManager.js';
 
 
+const regexUsername = /^.{5,20}$$/
+const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[~!@#$%^&*]).{8,}$/
 /**
  * Handler per il login
  * @param {ClientRequest} request 
@@ -25,7 +25,7 @@ async function loginHandler(request, response) {
     });
     request.on('end', async () => {
         console.log('Body ricevuto: ' + body);
-        const data = qs.parse(body);
+        const data = JSON.parse(body)
         console.log("Tentativo di login per utente: " + data.username);
         const user = getUserByUsername.get(data.username);
         if (!user) {
@@ -83,7 +83,7 @@ async function registerHandler(request, response) {
     });
     request.on('end', async () => {
         console.log('Body ricevuto: ' + body);
-        const data = qs.parse(body);
+        const data = JSON.parse(body)
         //Registrazione nuovo utente
         console.log("Tentativo di registrazione per utente: " + data.username);
         const user = getUserByUsername.get(data.username);
@@ -93,11 +93,16 @@ async function registerHandler(request, response) {
             response.end(JSON.stringify({ register: false, message: 'Username già in uso' }));
             return;
         } else {
-            //Controllo username e password validi
-            //Username e password non vuoti, username con meno di 20 caratteri e password almeno 6 caratteri
-            if (!data.username || !data.password || data.password.length < 6 || data.username.length > 20) {
+            //Controllo username e password usando regex
+            if (!regexUsername.test(data.username)) {
                 response.writeHead(400, { 'Content-Type': 'application/json' });
-                response.end(JSON.stringify({ register: false, message: 'Username o password non validi (min 6 caratteri, max 20 per username)' }));
+                response.end(JSON.stringify({ register: false, message: 'Username non valido' }));
+                return;
+            }
+
+            if (!regexPassword.test(data.password)) {
+                response.writeHead(400, { 'Content-Type': 'application/json' });
+                response.end(JSON.stringify({ register: false, message: 'Password non valida' }));
                 return;
             }
 

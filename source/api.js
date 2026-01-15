@@ -33,7 +33,7 @@ async function API_manager(request, response){
         response.end(JSON.stringify({ message: 'Route not found' }));
     } else {
         // Tutte le altre rotte API richiedono autenticazione
-        var cookies = cookie.parse(request.headers.cookie || "");
+        let cookies = cookie.parse(request.headers.cookie || "");
         const token = cookies['auth_token'];
         if (!token) {
             response.writeHead(401, { 'Content-Type': 'application/json' });

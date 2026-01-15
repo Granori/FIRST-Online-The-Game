@@ -4,7 +4,7 @@ const numeri = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "#2", "#stop", "#ch
 const jolly = ["#4, #colore"]
 
 
-class Carta {
+class Card {
     constructor(numero, colore) {
         this.numero = numero;
         this.colore = colore;
@@ -46,11 +46,11 @@ class Carta {
             numero = numeri[random]
         }
         
-        return new Carta(numero, colore)
+        return new Card(numero, colore)
         
     }
 
 
 }
 
-export {Carta}
+export {Card}

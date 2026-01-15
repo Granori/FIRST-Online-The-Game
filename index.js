@@ -3,7 +3,7 @@ import path from 'path';
 import url from 'url';
 import http from 'http';
 import { API_manager } from './source/api.js';
-import { constrainedMemory } from 'process';
+import {GameManager} from './source/GameManager.js'
 //cookie, bcrypt, JWT per autenticazione
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url)); //Alternativa per usare __dirname con ES6
@@ -43,6 +43,12 @@ async function requestHandler(request, response) {
         //Gestione API
         API_manager(request, response);
         return;
+    }
+    
+    if (objURL.pathname.startsWith("/game")) {
+        //GameManager()
+        response.statusCode = 501;
+        response.end()
     }
 
     const estensione = path.extname(objURL.pathname == "/" ? "/login.html" : objURL.pathname);

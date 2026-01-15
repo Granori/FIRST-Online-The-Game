@@ -1,10 +1,10 @@
-import { Carta } from "./Carta"
+import { Card }from "./Card"
 
 const CARTE_INIZIALI = 7
 
 
 
-class Mazzo {
+class Deck {
     constructor() {
         this.carte = []
         this.popola()
@@ -18,9 +18,11 @@ class Mazzo {
     }
 
     pesca(){
-        this.carte.push(Carta.generateCarta())
+        let carta = Card.generateCarta()
+        this.carte.push(carta)
+        
     }
 
 }
 
-export {Mazzo}
+export {Deck}
