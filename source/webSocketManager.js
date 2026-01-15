@@ -35,6 +35,8 @@ function initializeServer(httpServer){
                     socket.disconnect(true)
                 } else {
                     console.log(headers);
+
+                    //Aggiungo il socket alla stanza
                     socket.join(headers.lobbyId);
 
                     //Salvo tutto sul socket
@@ -45,7 +47,7 @@ function initializeServer(httpServer){
 
 
                     //Comunico l'ingresso in chat
-                    lobbyChat.to(headers.lobbyId).except(socket.id).emit("userJoin", decoded.username)
+                    lobbyChat.to(headers.lobbyId).emit("userJoin", decoded.username)
 
 
                     //Associo event Listener
@@ -60,8 +62,7 @@ function initializeServer(httpServer){
                             timestamp: new Date().toISOString()
                         };
 
-                        // Inviamo a tutti (incluso il mittente)
-                        io.emit("new_message", messaggioObj);
+                        // Inviamo a tutti (escluso il mittente)
                         lobbyChat.to(headers.lobbyId).except(socket.id).emit("messaggio", messaggio)
                     })
                 }

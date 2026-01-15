@@ -54,10 +54,15 @@ async function loginHandler(request, response) {
                     sameSite: 'lax',
                     expires: new Date(Date.now() + 2 * 60 * 60 * 1000) // 2 ore
                 });
-                response.writeHead(302, {
-                    'Location': '/hub.html',
-                    'Set-Cookie': cookieAuth
-                });
+                //response.writeHead(302, {
+                //    'Location': '/hub.html',
+                //    'Set-Cookie': cookieAuth
+                //});
+                response.writeHead(401, {
+                     'Content-Type': 'application/json',
+                     'Set-Cookie': cookieAuth
+                    });
+                response.end(JSON.stringify({ login: true }));
                 response.end();
 
                 //response.setHeader('Set-Cookie', cookieAuth);
@@ -86,7 +91,7 @@ async function registerHandler(request, response) {
         const data = JSON.parse(body)
         //Registrazione nuovo utente
         console.log("Tentativo di registrazione per utente: " + data.username);
-        const user = getUserByUsername.get(data.username);
+        let user = getUserByUsername.get(data.username);
         if (user) {
             //Utente già esistente
             response.writeHead(409, { 'Content-Type': 'application/json' });
@@ -94,15 +99,9 @@ async function registerHandler(request, response) {
             return;
         } else {
             //Controllo username e password usando regex
-            if (!regexUsername.test(data.username)) {
+            if (!regexUsername.test(data.username) && !regexPassword.test(data.password)) {
                 response.writeHead(400, { 'Content-Type': 'application/json' });
-                response.end(JSON.stringify({ register: false, message: 'Username non valido' }));
-                return;
-            }
-
-            if (!regexPassword.test(data.password)) {
-                response.writeHead(400, { 'Content-Type': 'application/json' });
-                response.end(JSON.stringify({ register: false, message: 'Password non valida' }));
+                response.end(JSON.stringify({ register: false, message: 'Username o password non validi' }));
                 return;
             }
 
@@ -111,8 +110,37 @@ async function registerHandler(request, response) {
             const passwordHash = await hashPassword(data.password);
             insertUser.run(data.username, passwordHash);
             response.writeHead(201, { 'Content-Type': 'application/json' });
-            response.end(JSON.stringify({ register: true, message: 'Utente registrato con successo' }));
-            return;
+
+
+            //Pesco dal db per avere l'id
+            user = getUserByUsername(data.username)
+
+            //Ho la certezza ipotetica che l'user esista, non necessito controlli
+            
+            //Registrazione riuscita, genero token
+            const token = await generateToken(user.id, user.username);
+            
+            //Genero cookie con la libreria cookie
+            const cookieAuth = cookie.serialize('auth_token', token, {
+                httpOnly: true,
+                secure: false, // Non uso https in locale
+                maxAge: 2 * 60 * 60, // 2 ore
+                path: '/',
+                sameSite: 'lax',
+                expires: new Date(Date.now() + 2 * 60 * 60 * 1000) // 2 ore
+            });
+            //response.writeHead(302, {
+            //    'Location': '/hub.html',
+            //    'Set-Cookie': cookieAuth
+            //});
+            response.writeHead(401, {
+                    'Content-Type': 'application/json',
+                    'Set-Cookie': cookieAuth
+                });
+            response.end(JSON.stringify({ register: true }));
+            response.end();
+            //response.end(JSON.stringify({ register: true, message: 'Utente registrato con successo' }));
+            //return;
         }});
 }
 
