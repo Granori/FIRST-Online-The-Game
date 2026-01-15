@@ -30,18 +30,18 @@ const modificheTemp = {
     img: null
 }
 
-// fetch('/api/user')
-//     .then(response => response.json())
-//     .then(data => {
-//         giocatore.username = data.user.username;
-//         giocatore.img = data.user.img;
+ fetch('/api/user')
+     .then(response => response.json())
+     .then(data => {
+         giocatore.username = data.user.username;
+         giocatore.img = data.user.img;
 
-//         refreshUsername();
-//         refreshIMG();
-//     })
-//     .catch(error => {
-//         console.error('Non è stato possibile ottenere i dati utente', error);
-// });
+         refreshUsername();
+         refreshIMG();
+     })
+     .catch(error => {
+         console.error('Non è stato possibile ottenere i dati utente', error);
+ });
 
 
 function refreshIMG() {

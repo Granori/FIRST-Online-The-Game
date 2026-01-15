@@ -106,7 +106,7 @@ anchorMuovi.forEach(anchor => {
 
 loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    if (managerLogin()) inviaLogin();
+    inviaLogin();
 });
 
 function managerLogin() {
@@ -139,7 +139,7 @@ async function inviaLogin() {
             throw new Error(`HTTP error status: ${res.status}`);
         }
 
-        const result = await response.json();
+        const result = await res.json();
         console.log('Successo:', result);
 
         if (!result.login) managerLogin();

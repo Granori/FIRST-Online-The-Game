@@ -58,7 +58,7 @@ async function loginHandler(request, response) {
                 //    'Location': '/hub.html',
                 //    'Set-Cookie': cookieAuth
                 //});
-                response.writeHead(401, {
+                response.writeHead(200, {
                      'Content-Type': 'application/json',
                      'Set-Cookie': cookieAuth
                     });
@@ -133,7 +133,7 @@ async function registerHandler(request, response) {
             //    'Location': '/hub.html',
             //    'Set-Cookie': cookieAuth
             //});
-            response.writeHead(401, {
+            response.writeHead(200, {
                     'Content-Type': 'application/json',
                     'Set-Cookie': cookieAuth
                 });
