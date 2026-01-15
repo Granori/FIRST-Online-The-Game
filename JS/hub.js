@@ -18,7 +18,17 @@ const btnAnnullaForm = document.getElementById("btnUndoUsername");
 const inputNomeForm = formProfilo.querySelector("input");
 const divBottoniForm = document.getElementById("divButtons");
 
-
+const riga = `<tr>
+                <td class="px-4 py-2 text-left">STANZA #1</td>
+                <td class="px-4 py-2 text-left">#0000</td>
+                <td class="px-4 py-2 text-left">Giocatore</td>
+                <td class="px-4 py-2 text-right">1/4</td>
+                <td class="px-4 py-2 text-right">
+                  <button class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-500">
+                    Entra
+                  </button>
+                </td>
+              </tr>`
 
 const giocatore = {
     username: "NomeGiocatore",

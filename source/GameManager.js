@@ -22,6 +22,15 @@ function GameManager(request, response, decoded){
      * 
      * 
      */
+    switch (urlObj.pathname){
+        case '/game/lobbies':
+            //Nome
+            //Id
+            //Numero giocatori
+        case '/game/joinLobby?lobbyId=?':
+            //true/false
+            //Redirect a stanza
+    }
 
 
 }

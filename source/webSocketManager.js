@@ -13,7 +13,6 @@ function initializeServer(httpServer){
     const lobbyChat = new Server(httpServer,{
         path: "/socket.io/lobby",
         cors: {
-            origin: ["https://example.com", "https://dev.example.com"],
             allowedHeaders: ["mode","lobbyId"],
             credentials: true
         }
@@ -21,7 +20,7 @@ function initializeServer(httpServer){
 
     lobbyChat.on("connection", (socket) => {
         const headers = socket.handshake.headers;
-        if (headers["mode"] == "chat") {
+        if (headers["mode"] == "lobby") {
             if (socket.recovered) {
                 //Riconnessione
                 
@@ -45,6 +44,8 @@ function initializeServer(httpServer){
                     socket.data.username = decoded.username
 
 
+                    //TODO: inviare lista giocatori nella stanza a chi è appena entrato (isHost)
+                    //socket.emit()
 
                     //Comunico l'ingresso in chat
                     lobbyChat.to(headers.lobbyId).emit("userJoin", decoded.username)
