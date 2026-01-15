@@ -12,31 +12,36 @@ const tendinaProfilo = document.getElementById("dropdownImgProfile");
 const imgPreviewProfile = document.getElementById("previewProfile").querySelector("img");
 const namePreviewProfile = document.getElementById("previewProfile").querySelector("h2");
 
-const formUsername = document.getElementById("formUsername");
+const formProfilo = document.getElementById("formProfile");
 const btnCambiaForm = document.getElementById("btnChangeUsername");
-const inputNomeForm = formUsername.firstElementChild.querySelector("input");
-const divBottoniForm = formUsername.lastElementChild;
-
+const btnAnnullaForm = document.getElementById("btnUndoUsername");
+const inputNomeForm = formProfilo.querySelector("input");
+const divBottoniForm = document.getElementById("divButtons");
 
 
 
 const giocatore = {
+    username: "NomeGiocatore",
+    img: "../cane1.jpg"
+}
+
+const modificheTemp = {
     username: null,
     img: null
 }
 
-fetch('/api/user')
-    .then(response => response.json())
-    .then(data => {
-        giocatore.username = data.user.username;
-        giocatore.img = data.user.img;
+// fetch('/api/user')
+//     .then(response => response.json())
+//     .then(data => {
+//         giocatore.username = data.user.username;
+//         giocatore.img = data.user.img;
 
-        refreshUsername();
-        refreshIMG();
-    })
-    .catch(error => {
-        console.error('Non è stato possibile ottenere i dati utente', error);
-});
+//         refreshUsername();
+//         refreshIMG();
+//     })
+//     .catch(error => {
+//         console.error('Non è stato possibile ottenere i dati utente', error);
+// });
 
 
 function refreshIMG() {
@@ -118,6 +123,7 @@ btnProfiloProfilo.addEventListener("click", (e) => {
     tendinaProfilo.classList.toggle("hidden");
 });
 
+// Click sull'immagine che si vuole avere
 tendinaProfilo.addEventListener("click", (e) => {
     e.stopPropagation();
 
@@ -127,41 +133,50 @@ tendinaProfilo.addEventListener("click", (e) => {
     let src = elemento.querySelector("img")?.src;
     if (!src) return;
 
-    giocatore.img = src;
-    refreshIMG();
+    modificheTemp.img = src;
+    imgProfiloProfilo.src = modificheTemp.img;
+    apriModifiche();
 });
 
+// Attiva il campo cambio nome quando si clicca sul bottone Cambia
 btnCambiaForm.addEventListener("click", (e) => {
-    divBottoniForm.classList.remove("hidden");
-    btnCambiaForm.classList.add("hidden");
+    e.stopPropagation();
+    apriModifiche();
 
-    inputNomeForm.disabled = false;
+    attivaInput();
 });
 
-function annullaCambioNome() {
-    inputNomeForm.value = giocatore.username;
-    inputNomeForm.disabled = true;
+btnAnnullaForm.addEventListener("click", (e) => {
+    e.stopPropagation();
 
-    btnCambiaForm.classList.remove("hidden");
-    divBottoniForm.classList.add("hidden");
-    nascondiErrore();
-}
+    disattivaInput();
+});
 
-formUsername.addEventListener("reset", (e) => {
+// Pulisce il form
+formProfilo.addEventListener("reset", (e) => {
+    e.stopPropagation();
     e.preventDefault();
-    annullaCambioNome();
+
+    chiudiModifiche();
 });
 
-formUsername.addEventListener("submit", (e) => {
+// Carica le modifiche
+formProfilo.addEventListener("submit", (e) => {
     e.preventDefault();
 
     let nome = e.target.elements["username"].value
     if (nome.length > 1) {
         // fetch
         giocatore.username = nome;
+
+        console.log("a")
+        if (giocatore.img !== modificheTemp.img && modificheTemp.img != null) {
+            giocatore.img = modificheTemp.img;
+            refreshIMG();
+        }
         refreshUsername();
 
-        annullaCambioNome();
+        chiudiModifiche();
     }
     else {
         mostraErrore();
@@ -169,14 +184,46 @@ formUsername.addEventListener("submit", (e) => {
 
 });
 
+// Nasconde errore del nome
 function nascondiErrore() {
     const errore = btnCambiaForm.nextElementSibling;
     if (errore.classList.contains("hidden")) return;
     errore.classList.add("hidden");
 }
 
+// Mostra errore del nome
 function mostraErrore() {
     const errore = btnCambiaForm.nextElementSibling;
     errore.classList.remove("hidden")
     setTimeout(nascondiErrore, 5000);
+}
+
+function apriModifiche() {
+    divBottoniForm.classList.remove("hidden");
+}
+
+function chiudiModifiche() {
+    imgProfiloProfilo.src = giocatore.img;
+    // inputNomeForm.value = giocatore.username;
+
+    modificheTemp.img = giocatore.img;
+    modificheTemp.username = giocatore.username;
+
+    divBottoniForm.classList.add("hidden");
+
+    disattivaInput();
+    nascondiErrore();
+}
+
+function attivaInput() {
+    inputNomeForm.disabled = false;
+    btnCambiaForm.classList.add("hidden");
+    btnAnnullaForm.classList.remove("hidden");
+}
+
+function disattivaInput() {
+    inputNomeForm.disabled = true;
+    inputNomeForm.value = giocatore.username;
+    btnCambiaForm.classList.remove("hidden");
+    btnAnnullaForm.classList.add("hidden");
 }

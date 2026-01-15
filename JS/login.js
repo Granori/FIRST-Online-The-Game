@@ -2,12 +2,12 @@ const overlay = document.getElementById("overlay");
 const anchorMuovi = document.querySelectorAll("a.switch-move");
 
 const loginForm = document.getElementById("logForm");
-const registraForm = document.getElementById("regForm");
+const lgUsernameForm = document.getElementById("lgUsername");
+const lgPasswordForm = document.getElementById("lgPassword");
 
-const rgUsername = document.getElementById("rgUsername");
-const rgPassword = document.getElementById("rgPassword");
-const lgUsername = document.getElementById("lgUsername");
-const lgPassword = document.getElementById("lgPassword");
+const registraForm = document.getElementById("regForm");
+const rgUsernameForm = document.getElementById("rgUsername");
+const rgPasswordForm = document.getElementById("rgPassword");
 
 const bottoniTendine = document.querySelectorAll("button.dropdown");
 
@@ -67,22 +67,13 @@ anchorMuovi.forEach(anchor => {
         registraForm.classList.toggle("invisible");
         registraForm.classList.toggle("absolute");
 
-        rgUsername.value = "";
-        rgPassword.value = "";
-        lgUsername.value = "";
-        lgPassword.value = "";
-
         loginForm.classList.toggle("opacity-0");
         loginForm.classList.toggle("invisible");
         loginForm.classList.toggle("absolute");
+
+        lgUsernameForm.value = "";
+        lgPasswordForm.value = "";
+        rgUsernameForm.value = "";
+        rgPasswordForm.value = "";
     });
-
-});
-
-
-registraForm.addEventListener("submit", (e) => {
-    // e.preventDefault();
-});
-loginForm.addEventListener("submit", (e) => {
-    // e.preventDefault();
 });
