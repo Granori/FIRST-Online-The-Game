@@ -113,7 +113,7 @@ async function registerHandler(request, response) {
 
 
             //Pesco dal db per avere l'id
-            user = getUserByUsername(data.username)
+            user = getUserByUsername.get(data.username)
 
             //Ho la certezza ipotetica che l'user esista, non necessito controlli
             
