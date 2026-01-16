@@ -14,6 +14,8 @@ const insertUser = db.prepare(`INSERT INTO users (username, password_hash) VALUE
 const getUserByUsername = db.prepare(`SELECT * FROM users WHERE username = ?`);
 //Query per ottenere un utente tramite id
 const getUserById = db.prepare(`SELECT * FROM users WHERE id = ?`);
+//Cambio l'username del giocatore
+const changeUsernameById = db.prepare('UPDATE users SET username = ? WHERE id = ?');
 //Inserisco un utente di test se non esiste
 const testUser = getUserByUsername.get('admin');
 if (!testUser) {
@@ -21,4 +23,4 @@ if (!testUser) {
     insertUser.run('admin', passwordHash);
 }
 
-export { db, insertUser, getUserByUsername };
+export { db, insertUser, getUserByUsername, getUserById, changeUsernameById };

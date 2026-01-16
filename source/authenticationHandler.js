@@ -162,4 +162,4 @@ async function disconnectHandler(request, response) {
     response.end();
 }
 
-export { loginHandler, registerHandler, disconnectHandler };
+export { loginHandler, registerHandler, disconnectHandler, regexUsername };

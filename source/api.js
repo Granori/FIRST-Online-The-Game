@@ -56,6 +56,13 @@ async function API_manager(request, response){
                 response.writeHead(200, { 'Content-Type': 'application/json' });
                 response.end(JSON.stringify({ token_valid: true, message: 'Token valido', user: {id: decoded.id, username: decoded.username} }));
                 return;
+            case '/api/changeUsername':
+                //Per cambiare username
+                //Valido prima la regex
+
+
+                //Invalido la sessione attuale
+                auth.disconnectHandler(request, response)
             case '/api/user':
                 // Restituisco le informazioni dell'utente
                 response.writeHead(200, { 'Content-Type': 'application/json' });
