@@ -10,6 +10,7 @@ const rgUsernameForm = document.getElementById("rgUsername");
 const rgPasswordForm = document.getElementById("rgPassword");
 
 const erroreUsername = document.getElementById("rgUsernameError");
+const erroreUsernameEsistente = document.getElementById("rgUsernameExist")
 const errorePassword = document.getElementById("rgPasswordError");
 const erroreMaiusc = document.getElementById("charMaiuscErr");
 const erroreCifra = document.getElementById("numberErr");
@@ -95,6 +96,7 @@ anchorMuovi.forEach(anchor => {
         erroreLogin.classList.add("hidden");
 
         erroreUsername.classList.add("hidden");
+        erroreUsernameEsistente.classList.add("hidden");
         errorePassword.classList.add("hidden");
 
         erroreMaiusc.classList.remove("text-red-600")
@@ -128,7 +130,7 @@ async function inviaLogin() {
     const postData = Object.fromEntries(formData.entries());
 
     try {
-        const res = await fetch('api/login', {
+        const response = await fetch('api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -136,7 +138,7 @@ async function inviaLogin() {
             body: JSON.stringify(postData),
         });
 
-        const result = await res.json();
+        const result = await response.json();
 
         if (!result.login) erroreLogin.classList.remove("hidden");
         else {
@@ -163,6 +165,7 @@ function managerRegister() {
     }
     else {
         erroreUsername.classList.remove("hidden");
+        erroreUsernameEsistente.add("hidden");
         errUsername = true;
     }
 
@@ -215,7 +218,7 @@ async function inviaRegister() {
     const postData = Object.fromEntries(formData.entries());
 
     try {
-        const res = await fetch('api/register', {
+        const response = await fetch('api/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -225,7 +228,18 @@ async function inviaRegister() {
 
         const result = await response.json();
 
-        if (!result.register) managerRegister();
+        if (!result.register) {
+            switch (result.message) {
+                case "Username già in uso":
+                    erroreUsername.classList.add("hidden");
+                    erroreUsernameEsistente.classList.remove("hidden");
+                    break;
+            
+                default:
+                    managerRegister();
+                    break;
+            }
+        }
         else {
             window.location.href = "hub.html";
         }
