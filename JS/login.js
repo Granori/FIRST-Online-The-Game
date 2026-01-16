@@ -106,13 +106,14 @@ anchorMuovi.forEach(anchor => {
 
 loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    inviaLogin();
+    if (managerLogin()) inviaLogin();
 });
 
 function managerLogin() {
     const username = loginForm.username.value;
     const password = loginForm.password.value;
 
+    console.log(regexUsername.test(username), regexPassword.test(password))
     if (!regexUsername.test(username) || !regexPassword.test(password)) {
         erroreLogin.classList.remove("hidden");
         return false;
@@ -135,14 +136,9 @@ async function inviaLogin() {
             body: JSON.stringify(postData),
         });
 
-        if (!res.ok) {
-            throw new Error(`HTTP error status: ${res.status}`);
-        }
-
         const result = await res.json();
-        console.log('Successo:', result);
 
-        if (!result.login) managerLogin();
+        if (!result.login) erroreLogin.classList.remove("hidden");
         else {
             window.location.href = "hub.html";
         }
@@ -227,12 +223,7 @@ async function inviaRegister() {
             body: JSON.stringify(postData),
         });
 
-        if (!res.ok) {
-            throw new Error(`HTTP error status: ${res.status}`);
-        }
-
         const result = await response.json();
-        console.log('Successo:', result);
 
         if (!result.register) managerRegister();
         else {
