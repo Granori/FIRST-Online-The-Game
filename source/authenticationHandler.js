@@ -94,12 +94,14 @@ async function registerHandler(request, response) {
         let user = getUserByUsername.get(data.username);
         if (user) {
             //Utente già esistente
+            console.log("Utente già esistente")
             response.writeHead(409, { 'Content-Type': 'application/json' });
             response.end(JSON.stringify({ register: false, message: 'Username già in uso' }));
             return;
         } else {
             //Controllo username e password usando regex
             if (!regexUsername.test(data.username) && !regexPassword.test(data.password)) {
+                console.log((regexUsername.test(data.username) ? "" : "Username errato ") + (regexPassword.test(data.password) ? "" : "Password errata"))
                 response.writeHead(400, { 'Content-Type': 'application/json' });
                 response.end(JSON.stringify({ register: false, message: 'Username o password non validi' }));
                 return;
@@ -107,9 +109,9 @@ async function registerHandler(request, response) {
 
 
             //Creo nuovo utente
+            console.log("Sto per creare un nuovo utente")
             const passwordHash = await hashPassword(data.password);
             insertUser.run(data.username, passwordHash);
-            response.writeHead(201, { 'Content-Type': 'application/json' });
 
 
             //Pesco dal db per avere l'id
@@ -138,10 +140,26 @@ async function registerHandler(request, response) {
                     'Set-Cookie': cookieAuth
                 });
             response.end(JSON.stringify({ register: true }));
-            response.end();
             //response.end(JSON.stringify({ register: true, message: 'Utente registrato con successo' }));
             //return;
         }});
 }
 
-export { loginHandler, registerHandler };
+
+async function disconnectHandler(request, response) {
+    //Invalido la sessione client invalidando il cookie
+    const cookieAuth = cookie.serialize('auth_token', "", {
+        httpOnly: true,
+        secure: false, // Non uso https in locale
+        path: '/',
+        sameSite: 'lax',
+        expires: new Date(Date.now() - 2 * 60 * 60 * 1000) // Data nel passato
+    });
+    response.writeHead(302, {
+        'Location': '/',
+        'Set-Cookie': cookieAuth
+    });
+    response.end();
+}
+
+export { loginHandler, registerHandler, disconnectHandler };

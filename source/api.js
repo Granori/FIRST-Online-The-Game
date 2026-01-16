@@ -6,7 +6,7 @@ import * as cookie from 'cookie';
 import * as db from './dbManager.js';
 import { ClientRequest, ServerResponse } from 'http';
 import { generateToken, verifyToken } from './tokenManager.js';
-import { loginHandler, registerHandler } from './authenticationHandler.js';
+import * as auth from './authenticationHandler.js';
 
 
 
@@ -24,9 +24,11 @@ async function API_manager(request, response){
     const urlObj = url.parse(request.url, true);
 
     if (urlObj.pathname === '/api/login') {
-        return loginHandler(request, response);
+        return auth.loginHandler(request, response);
     } else if (urlObj.pathname === '/api/register') {
-        return registerHandler(request, response);
+        return auth.registerHandler(request, response);
+    } else if (urlObj.pathname === '/api/disconnect') {
+        return auth.disconnectHandler(request, response);   //Fa redirect alla pagina login.html invalidando il cookie
     } else if (urlObj.pathname === '/api') {
         // Default route (Not Found)
         response.writeHead(404, { 'Content-Type': 'application/json' });

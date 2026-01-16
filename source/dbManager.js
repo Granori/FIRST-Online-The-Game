@@ -15,10 +15,10 @@ const getUserByUsername = db.prepare(`SELECT * FROM users WHERE username = ?`);
 //Query per ottenere un utente tramite id
 const getUserById = db.prepare(`SELECT * FROM users WHERE id = ?`);
 //Inserisco un utente di test se non esiste
-const testUser = getUserByUsername.get('testuser');
+const testUser = getUserByUsername.get('admin');
 if (!testUser) {
-    const passwordHash = await hashPassword('123456');
-    insertUser.run('testuser', passwordHash);
+    const passwordHash = await hashPassword('Aa1111@#@#');
+    insertUser.run('admin', passwordHash);
 }
 
 export { db, insertUser, getUserByUsername };
