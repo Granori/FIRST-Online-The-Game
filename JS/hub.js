@@ -19,6 +19,9 @@ const inputNomeForm = formProfilo.querySelector("input");
 const divBottoniForm = document.getElementById("divButtons");
 const errCambiaInfo = document.getElementById("errChange");
 
+const formCreaStanza = document.getElementById("formCreaStanza");
+const errCreaStanza = document.getElementById("erroreCreazioneStanza");
+
 const regexUsername = /^.{5,20}$/;
 
 const divStanze = document.getElementById("divStanze")
@@ -171,6 +174,31 @@ btnProfiloNav.addEventListener("click", (e) => {
     tendinaNav.classList.toggle("hidden");
 });
 
+formCreaStanza.addEventListener("submit", (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    let nomeStanza = formCreaStanza.nomeStanza.value;
+    if (nomeStanza === "") {
+        errCreaStanza.classList.remove("hidden");
+        return;
+    }
+
+    fetch('/game/createLobby', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "nome": nomeStanza
+        })
+    })
+        .catch(error => {
+            console.error('Errore invio richiesta di creazione stanza', error);
+            errCambiaInfo.classList.remove("hidden");
+        });
+});
+
 // Evento per aprire le overlay dei button
 // Ogni button ha una data-action
 tendinaNav.addEventListener("click", (e) => {
@@ -292,7 +320,7 @@ formProfilo.addEventListener("submit", (e) => {
         dati.img = modificheTemp.img;
     }
 
-    fetch('/api/changeUsername', {
+    fetch('/api/changeUsernameInfo', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
