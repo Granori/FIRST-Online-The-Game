@@ -1,11 +1,83 @@
-<!DOCTYPE html>
-<html lang="it-IT">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Partita</title>
-</head>
-<body>
-    <!--TODO: Questa potrebbe essere la pagina della partita del gioco con tutta l'implementazione di socket.io-->
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FIRST - partita</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="bg-green-600 flex flex-col h-screen overflow-hidden">
+    <nav class="bg-gray-900 text-white w-full shadow">
+      <div class="mx-auto px-4 py-3 grid grid-cols-3 items-center">
+        <div class="flex items-center gap-2 md:gap-10">
+          <h1 class="text-xl font-semibold">FIRST Online</h1>
+          <h2 id="idStanza" class="text-md font-normal">STANZA#0000</h2>
+        </div>
+        <div class="text-center">
+          <h2 id="hTurno" class="text-md font-medium">Turno 1</h2>
+        </div>
+        <form id="formLeaveLobby" class="text-right" action="/game/leaveGame" method="post">
+          <button type="submit" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded">
+            Indietro
+          </button>
+
+        </form>
+
+      </div>
+
+    </nav>
+
+    <div class="relative w-full flex-1 overflow-hidden">
+        <div class="absolute top-4 right-12">
+            <div class="relative">
+
+                <!-- carta dietro 1 -->
+                <div class="absolute w-24 h-36 bg-gray-700 border-4 border-white rounded-xl shadow-xl -rotate-2 translate-x-1 translate-y-1"></div>
+
+                <!-- carta dietro 2 -->
+                <div class="absolute w-24 h-36 bg-gray-750 border-4 border-white rounded-xl shadow-xl rotate-1 translate-x-2 translate-y-2"></div>
+
+                <!-- carta frontale -->
+                <div class="relative w-24 h-36 bg-gray-800 border-4 border-white rounded-xl shadow-xl flex items-center justify-center transition-all duration-200 hover:-translate-y-2 hover:scale-105 active:translate-y-0 active:scale-95 cursor-pointer">
+                    <span class="absolute text-white text-xl font-bold">PESCA</span>
+                </div>
+
+            </div>
+        </div>
+
+      <!-- CARTA AL CENTRO -->
+      <div id="cartaCentro" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        
+
+      </div>
+
+      <!-- MAZZO IN BASSO -->
+      <div id="mazzo" class="absolute flex bottom-4 left-1/2 -translate-x-1/2">
+        
+      </div>
+
+      <!-- MAZZO A SINISTRA (orizzontale) -->
+      <div class="absolute left-4 top-1/2 -translate-y-1/2 rotate-90">
+        <div class="w-26 h-39 bg-gray-800 border-4 border-white rounded-xl flex items-center justify-center">
+            <span class="absolute text-white text-5xl font-bold">7</span>
+        </div>
+      </div>
+      <!-- MAZZO IN ALTO -->
+      <div class="absolute top-4 left-1/2 -translate-x-1/2">
+        <div class="w-26 h-39 bg-gray-800 border-4 border-white rounded-xl flex items-center justify-center">
+            <span class="absolute text-white text-5xl font-bold">7</span>
+        </div>
+      </div>
+      <!-- MAZZO A DESTRA (orizzontale) -->
+      <div class="absolute right-4 top-1/2 -translate-y-1/2 -rotate-90">
+        <div class="w-26 h-39 bg-gray-800 border-4 border-white rounded-xl flex items-center justify-center">
+            <span class="absolute text-white text-5xl font-bold">7</span>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="partita.js"></script>
+  </body>
+
 </html>
