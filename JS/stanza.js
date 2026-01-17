@@ -61,6 +61,7 @@ socket.on("userJoin", (messaggio) => {
 //     },
 //     timestamp: new Date().toISOString()
 // };
+
 socket.on("messaggio", (messaggio) => {
     caricaMessaggioArrivato(messaggio.sender.name, messaggio.content);
 })
