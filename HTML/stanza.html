@@ -13,43 +13,23 @@
                 <h1 class="text-xl font-semibold">
                     FIRST Online
                 </h1>
-                <h2 class="text-md font-normal">
-                    STANZA#0001
+                <h2 id="idStanza" class="text-md font-normal">
+
                 </h2>
             </div>
-            <button class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded">
-                Indietro
-            </button>
+            <form id="formLeaveLobby" action="/game/leaveLobby" method="post">
+                <button type="submit" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded">
+                    Indietro
+                </button>
+
+            </form>
 
         </div>
         
     </nav>
 
     <div id="listGiocatori" class="border-2 border-gray-300 flex justify-evenly flex-wrap">
-        <div class="hidden rounded-lg p-6 text-center">
-            <img src="./cane1.jpg" alt="Profilo" class="w-45 h-45 rounded-full mx-auto mb-4 object-cover"/>
-
-            <h2 class="text-xl font-semibold text-gray-800">NomeGiocatore</h2>
-
-        </div>
-        <div class="hidden rounded-lg p-6 text-center">
-            <img src="./cane1.jpg" alt="Profilo" class="w-45 h-45 rounded-full mx-auto mb-4 object-cover"/>
-
-            <h2 class="text-xl font-semibold text-gray-800">NomeGiocatore</h2>
-
-        </div>
-        <div class="hidden rounded-lg p-6 text-center">
-            <img src="./cane1.jpg" alt="Profilo" class="w-45 h-45 rounded-full mx-auto mb-4 object-cover"/>
-
-            <h2 class="text-xl font-semibold text-gray-800">NomeGiocatore</h2>
-
-        </div>
-        <div class="hidden rounded-lg p-6 text-center">
-            <img src="./cane1.jpg" alt="Profilo" class="w-45 h-45 rounded-full mx-auto mb-4 object-cover"/>
-
-            <h2 class="text-xl font-semibold text-gray-800">NomeGiocatore</h2>
-
-        </div>
+        
 
     </div>
 

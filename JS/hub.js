@@ -40,7 +40,7 @@ const riga = `
 
 const giocatore = {
     username: "NomeGiocatore",
-    img: "../cane1.jpg"
+    img: "cane1.jpg"
 }
 
 const modificheTemp = {
@@ -52,7 +52,7 @@ fetch('/api/user')
     .then(response => response.json())
     .then(data => {
         giocatore.username = data.user.username;
-        giocatore.img = data.user.img;
+        giocatore.img = data.user.pathImg;
 
         refreshUsername();
         refreshIMG();
