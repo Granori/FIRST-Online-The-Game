@@ -1,9 +1,14 @@
 const divIdStanza = document.getElementById("idStanza");
 const formLeaveLobby = document.getElementById("formLeaveLobby")
 
+const inpNomeStanza = document.getElementById("nomeStanza");
+const numGiocatoriStanza = document.getElementById("giocatoriStanza");
+const btnAvviaPartita = document.getElementById("avviaPartita");
+
 const divGiocatori = document.getElementById("listGiocatori");
 const listaGiocatori = divGiocatori.querySelectorAll("div");
 
+const formChat = document.getElementById("chatForm");
 const divChat = document.getElementById("chat");
 
 const stanza = {
@@ -13,7 +18,7 @@ const stanza = {
 
 const giocatore = {
     username: "Tu",
-    ishost: null
+    isHost: null
 }
 
 fetch('/api/user')
@@ -31,6 +36,9 @@ fetch('/api/stanza')
     .then(data => {
         stanza.id = data.lobbyId;
         stanza.nome = data.nome;
+
+        inpNomeStanza.innerText = stanza.nome;
+        numGiocatoriStanza.innerText = `${data.players.length}/4`;
         
         divIdStanza.innerText = stanza.id;
         caricaGiocatori(data.players);
@@ -41,12 +49,29 @@ fetch('/api/stanza')
 
 const socket = io();
 
-// Gestione chat
+socket.on("userJoin", (messaggio) => {
+    console.log(messaggio)
+});
+
+// const messaggioObj = {
+//     content: messaggio,
+//     sender: {
+//         id: socket.data.userId,
+//         name: socket.data.username
+//     },
+//     timestamp: new Date().toISOString()
+// };
+socket.on("messaggio", (messaggio) => {
+    caricaMessaggioArrivato(messaggio.sender.name, messaggio.content);
+})
 
 function caricaGiocatori(giocatori) {
     giocatori.forEach(g => {
         if (g.username === giocatore.username) {
-            giocatore.ishost = g.isHost;
+            giocatore.isHost = g.isHost;
+            if (giocatore.isHost) {
+                btnAvviaPartita.disabled = false;
+            }
         }
 
         addGiocatore(g);
@@ -105,4 +130,18 @@ formLeaveLobby.addEventListener("submit", (e) => {
         .catch(error => {
             console.error('Errore uscita dalla lobby', error);
         });
+})
+
+formChat.addEventListener("submit", (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    let messaggio = formChat.messaggio.value;
+
+    if (messaggio.length <= 0) return;
+
+    socket.emit(messaggio);
+    caricaMessaggioInviato(messaggio);
+
+    formChat.messaggio.value = "";
 })

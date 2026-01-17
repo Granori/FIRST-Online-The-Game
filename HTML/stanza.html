@@ -39,15 +39,15 @@
                
             </div>
             <form id="chatForm" class="flex items-center gap-4 justify-center">
-                <input id="messaggio" type="text" class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Scrivi un messaggio" /> 
-                <button class="text-lg font-semibold whitespace-nowrap bg-amber-400 p-2 px-4 rounded-xl">Invia</button>
+                <input name="messaggio" type="text" class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Scrivi un messaggio" autocomplete="off"/> 
+                <button type="submit" class="text-lg font-semibold whitespace-nowrap bg-amber-400 p-2 px-4 rounded-xl">Invia</button>
             
             </form>
 
         </section>
         <section class="col-span-1 bg-gray-200 rounded-xl m-5 p-5">
             <h1 class="text-2xl font-bold text-gray-800">Stanza di Giocatore</h1>
-            <div class="mt-8 space-y-3">
+            <form class="mt-8 space-y-3">
                 <div class="flex items-center gap-4">
                     <label for="nomeStanza" class="text-md font-medium whitespace-nowrap"> Nome stanza: </label>
                     <input id="nomeStanza" type="text" disabled class="border rounded-lg px-3 py-2 w-full disabled:bg-gray-200 disabled:cursor-not-allowed" placeholder="Nome della stanza" /> 
@@ -56,19 +56,20 @@
                     <label for="giocatoriStanza" class="text-md font-medium whitespace-nowrap"> Num giocatori: </label>
                     <input id="giocatoriStanza" type="text" disabled class="rounded-lg px-3 py-2 disabled:bg-gray-200 disabled:cursor-not-allowed w-20 text-center" placeholder="Num giocatori" value="1/4"/> 
                 </div>
-                <div class="flex items-center gap-4">
+                <!-- <div class="flex items-center gap-4">
                     <label for="inJolly" class="text-md font-medium whitespace-nowrap">Carte speciali: </label>
                     <select name="jolly" id="inJolly">
                         <option value="SI" selected>VERO</option>
                         <option value="NO">FALSO</option>
                     </select> 
-                </div>
-                <button type="submit" class="w-full bg-white border-2 border-green-400 p-2 px-10 rounded-xl hover:shadow-md hover:shadow-green-300 hover:bg-green-100 hover:border-green-100 transition-all duration-300">Avvia partita</button>
-            </div>
+                </div> -->
+                <button id="avviaPartita" type="submit" class="w-full bg-white border-2 border-green-400 p-2 px-10 rounded-xl hover:shadow-md hover:shadow-green-300 hover:bg-green-100 hover:border-green-100 transition-all duration-300 disabled:cursor-not-allowed" disabled>Avvia partita</button>
+            </form>
         </section>
         
     </div>
 
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
     <script src="stanza.js"></script>
 </body>
 </html>
