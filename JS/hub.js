@@ -327,8 +327,17 @@ formProfilo.addEventListener("submit", (e) => {
         },
         body: JSON.stringify({dati})
     })
-        .then(response => response.json())
+        .then(response => {
+            // Verifica se la risposta è un redirect
+            if (response.redirected) {
+                // Esegui il redirect
+                window.location.href = response.url;
+                return;
+            }
+            return response.json();
+        })
         .then(result => {
+            //TODO: gestione degli errori della API
             if (result.valido) {
                 giocatore.username = nome;
                 giocatore.img = modificheTemp.img;

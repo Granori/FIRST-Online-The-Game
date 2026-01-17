@@ -6,7 +6,7 @@ import { generateToken} from './tokenManager.js';
 import { hashPassword, comparePassword } from './passwordManager.js';
 
 
-const regexUsername = /^.{5,20}$$/
+const regexUsername = /^.{5,20}$/
 const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[~!@#$%^&*]).{8,}$/
 /**
  * Handler per il login
@@ -145,7 +145,11 @@ async function registerHandler(request, response) {
         }});
 }
 
-
+/**
+ * Handler per la disconnessione
+ * @param {ClientRequest} request 
+ * @param {ServerResponse} response 
+ */
 async function disconnectHandler(request, response) {
     //Invalido la sessione client invalidando il cookie
     const cookieAuth = cookie.serialize('auth_token', "", {
@@ -155,6 +159,7 @@ async function disconnectHandler(request, response) {
         sameSite: 'lax',
         expires: new Date(Date.now() - 2 * 60 * 60 * 1000) // Data nel passato
     });
+    console.log(response.getHeaders())
     response.writeHead(302, {
         'Location': '/',
         'Set-Cookie': cookieAuth

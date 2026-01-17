@@ -49,7 +49,7 @@ async function requestHandler(request, response) {
         //GameManager()
         response.statusCode = 501;
         response.end()
-        return
+        return;
     }
 
     const estensione = path.extname(objURL.pathname == "/" ? "/login.html" : objURL.pathname);

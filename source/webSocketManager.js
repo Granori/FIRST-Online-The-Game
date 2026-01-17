@@ -64,7 +64,7 @@ function initializeServer(httpServer){
                         };
 
                         // Inviamo a tutti (escluso il mittente)
-                        lobbyChat.to(headers.lobbyId).except(socket.id).emit("messaggio", messaggio)
+                        lobbyChat.to(headers.lobbyId).except(socket.id).emit("messaggio", messaggioObj)
                     })
                 }
 
