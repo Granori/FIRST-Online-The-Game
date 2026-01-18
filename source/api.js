@@ -158,25 +158,28 @@ async function API_manager(request, response){
                 break;
             case '/api/user':
                 // Restituisco le informazioni dell'utente
+                if ("id_utente" in urlObj.query) {
+                    // Estrai l'ID dall'URL
+                    const idUtente = urlObj.query.id_utente
+                    console.log()
+                    const infoUtente = db.getUserById.get(idUtente);
+                    if (!infoUtente) {
+                        // Utente non trovato
+                        response.writeHead(404, { 'Content-Type': 'application/json' });
+                        response.end(JSON.stringify({ message: 'Utente non trovato' }));
+                        return;
+                    }
+                // Restituisco le informazioni dell'utente corrente
+                response.writeHead(200, { 'Content-Type': 'application/json' });
+                response.end(JSON.stringify({ user: { id: idUtente, username: infoUtente.username, pathImg: infoUtente.pathImg } }));
+                return;
+                }
                 console.log(decoded)
                 const user = db.getUserById.get(decoded.id)
                 response.writeHead(200, { 'Content-Type': 'application/json' });
                 response.end(JSON.stringify({ user: { id: user.id, username: user.username, pathImg: user.pathImg } }));
                 return;
-            case '/api/user/:id_utente':
-                // Estrai l'ID dall'URL
-                const idUtente = urlObj.pathname.split('/').pop();
-                const infoUtente = db.getUserById.get(idUtente);
-                if (!infoUtente) {
-                    // Utente non trovato
-                    response.writeHead(404, { 'Content-Type': 'application/json' });
-                    response.end(JSON.stringify({ message: 'Utente non trovato' }));
-                    return;
-                }
-                // Restituisco le informazioni dell'utente
-                response.writeHead(200, { 'Content-Type': 'application/json' });
-                response.end(JSON.stringify({ user: { id: idUtente, username: infoUtente.username, pathImg: infoUtente.pathImg } }));
-                return;
+                
 
             default:
                 response.writeHead(404, { 'Content-Type': 'application/json' });

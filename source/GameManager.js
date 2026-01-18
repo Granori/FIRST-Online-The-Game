@@ -1,16 +1,6 @@
 import { ClientRequest, ServerResponse } from 'http';
 import * as url from 'url';
-import {Lobby} from './class/Lobby.js'
-
-
-
-
-
-
-export let lobby = []
-export let partite = []
-
-
+import {lobby, Lobby} from './class/Lobby.js'
 
 
 

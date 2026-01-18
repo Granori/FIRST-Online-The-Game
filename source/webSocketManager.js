@@ -2,6 +2,8 @@ import {Server} from "socket.io"
 import * as cookie from "cookie"
 import { verifyToken } from "./tokenManager.js";
 
+import * as lobby from './class/Lobby.js'
+
 let io
 
 /**
@@ -40,10 +42,59 @@ function initializeServer(httpServer){
     lobbySpace.on("connection", (socket) => {
         socket.on("joinLobby", (lobbyId) => {
             console.log(`${socket.data.username} con id ${socket.data.id} vuole unirsi alla lobby con id ${lobbyId}`)
+
             //I giocatori sono già stati assegnati alla stanza precedentemente
+            //L'unione della classe è già avvenuta precedentemente
             
-        })
+            //Faccio solo un controllo di autenticità
+            const foundLobby = lobby.lobby.find(lobby => lobby.lobbyId === lobbyId);
+            if (!foundLobby) {
+                let e = "Lobby non trovata"
+                console.log(e);
+                socket.emit("joinFailed", e);
+                return;
+            }
+
+            //Lobby trovata, controllo se il giocatore si è unito a questa lobby
+            const foundPlayer = foundLobby.players.find(player => player == socket)
+
+            if (!foundPlayer) {
+                let e = "Giocatore non in lobby"
+                console.log(socket.data.username + " non in lobby " + foundLobby.name)
+                socket.emit("joinFailed", e);
+                return;
+            }
+
+
+            //Controllo effettuato, l'userId fa parte della lobby
+
+            socket.join(lobbyId);
+            socket.data.lobbyId = lobbyId;
+
+            lobbySpace.to(lobbyId).emit("lobbyUpdate", lobby.snapshot());
+
+            const update = () => lobbySpace.to(lobbyId).emit("lobbyUpdate", lobby.snapshot());
+
+            foundLobby.on("playerJoined", update);
+            foundLobby.on("playerLeft", update);
+            foundLobby.on("hostChanged", update);
+            foundLobby.on("started", () =>
+                lobbySpace.to(lobbyId).emit("start")
+            );
+
+            
+            socket.on("startGame", () => {
+                foundLobby.start(socket.data.id);
+            });
+
+            socket.on("disconnect", () => {
+                foundLobby.removePlayer(socket.data.id);
+                if (foundLobby.isEmpty()) {
+                    foundLobby.destroy()
+                }
+            })
     })
+})
 
 
     /*
