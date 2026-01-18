@@ -99,8 +99,8 @@ async function getInformazioniGiocatore(giocatoreId) {
     try {
         const response = await fetch(`/api/user?${giocatoreId}`);
         const data = await response.json();
-
-        return new Player(data.username, data.pathImg);
+        console.log(data, data.user.username)
+        return new Player(data.user.username, data.user.pathImg);
     } catch (error) {
         console.error("Non è stato possibile ottenere i dati dell'utente", error);
         return null;
