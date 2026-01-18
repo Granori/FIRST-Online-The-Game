@@ -69,7 +69,7 @@ function aggiornaStanza() {
     fetch('/game/lobbies')
         .then(response => response.json())
         .then(data => {
-            caricaStanze(data.stanze);
+            caricaStanze(data);
         })
         .catch(error => {
             console.error('Non è stato possibile caricare le stanze', error);
