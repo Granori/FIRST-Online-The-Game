@@ -153,18 +153,12 @@ function disattivaInput() {
 }
 
 
-divStanze.addEventListener("click", (e) => {
-    e.stopPropagation();
-    const actionId = e.target.dataset.id;
-    if (!actionId) return;
-
-    console.log("Entra nella stanza:", actionId);
-    
-    fetch(`/game/joinLobby?lobbyId=${actionId}`)
+function richiestaUnioneStanza(lobbyId) {
+    fetch(`/game/joinLobby?lobbyId=${lobbyId}`)
         .then(response => response.json())
         .then(data => {
             if (data.canJoin) {
-                sessionStorage.setItem("lobbyId", actionId);
+                sessionStorage.setItem("lobbyId", lobbyId);
             }
             else {
                 console.log("Richiesta ingresso negata");
@@ -173,6 +167,16 @@ divStanze.addEventListener("click", (e) => {
         .catch(error => {
             console.error('Non è stato possibile inviare la richiesta di unione', error);
         });
+}
+
+divStanze.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const actionId = e.target.dataset.id;
+    if (!actionId) return;
+
+    console.log("Entra nella stanza:", actionId);
+    
+    richiestaUnioneStanza(actionId);
 
 });
 
@@ -206,6 +210,10 @@ formCreaStanza.addEventListener("submit", (e) => {
             "nome": nomeStanza
         })
     })
+        .then(response => response.json())
+        .then(data => {
+            richiestaUnioneStanza(data.lobbyId);
+        })
         .catch(error => {
             console.error('Errore invio richiesta di creazione stanza', error);
             errCambiaInfo.classList.remove("hidden");
