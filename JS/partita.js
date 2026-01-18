@@ -15,17 +15,25 @@ const textClassMap = {
 };
 
 class Carta {
+    static idCarte = 0;
     constructor(numero, colore) {
+        this.id = Carta.idCarte;
+        Carta.idCarte++;
+
         this.numero = numero;
         this.colore = colore;
     }
 }
 
-const cartaTurno = new Carta(8, "blue");
+const giocatore = {
+    carte: null
+}
 
-renderMazzo([new Carta(1, "yellow"), new Carta(2, "green"), new Carta(3, "blue"), new Carta(4, "red"), new Carta(1, "yellow"), new Carta(2, "green"), new Carta(3, "blue"), new Carta(4, "red")]);
+let cartaTurno = new Carta(8, "blue");
+giocatore.carte = [new Carta(1, "yellow"), new Carta(2, "green"), new Carta(3, "green"), new Carta(3, "blue"), new Carta(4, "red"), new Carta(1, "yellow"), new Carta(2, "green"), new Carta(3, "blue"), new Carta(4, "red")];
+
+renderMazzo(giocatore.carte);
 caricaCartaTurno(cartaTurno)
-
 
 
 function renderMazzo(carte) {
@@ -54,7 +62,7 @@ function renderMazzo(carte) {
         const bgClass = bgClassMap[carta.colore];
         const textClass = textClassMap[carta.colore];
         const elemento = `
-            <div data-colore="${carta.colore}" data-numero="${carta.numero}" 
+            <div data-id="${carta.id}" data-colore="${carta.colore}" data-numero="${carta.numero}" 
                 class="relative w-28 h-42 2xl:w-32 2xl:h-48 rounded-3xl text-white overflow-hidden border-4 border-white cursor-pointer hover:-translate-y-4 hover:scale-110 duration-200 ${bgClass}"
                 style="
                     margin-left: ${i === 0 ? "0px" : `${overlap}px`};
@@ -92,7 +100,7 @@ function caricaCartaTurno(carta) {
     const textClass = textClassMap[carta.colore];
 
     cartaCentro.innerHTML = `
-        <div class="relative w-32 h-50 2xl:w-36 2xl:h-54 rounded-3xl ${bgClass} text-white overflow-hidden border-4 border-white">
+        <div class="relative w-32 h-50 2xl:w-36 2xl:h-54 rounded-3xl ${bgClass} text-white overflow-hidden border-4 border-white opacity-0 scale-50 transition-all duration-300 ease-out">
           <!-- bordo interno -->
           <div class="absolute inset-2 rounded-3xl ${bgClass}"></div>
 
@@ -112,15 +120,33 @@ function caricaCartaTurno(carta) {
           </div>
 
         </div>`
+    
+    setTimeout(() => { 
+        cartaCentro.firstElementChild.classList.remove("opacity-0", "scale-50"); 
+    }, 10);
 }
 
 mazzoGiocatore.addEventListener("click", (e) => {
-    const action = e.target.closest("[data-numero]");
+    const action = e.target.closest("[data-id]");
     if (!action) return;
 
+    const id = action.dataset.id;
     const colore = action.dataset.colore;
     const numero = action.dataset.numero;
 
-    if (colore == cartaTurno.colore || numero == cartaTurno.numero) console.log("giocata")
+    if (colore == cartaTurno.colore || numero == cartaTurno.numero) {
+        console.log("giocata");
+        rimuoviCartaDalMazzo(id);
+
+        cartaTurno = new Carta(numero, colore);
+        caricaCartaTurno(cartaTurno);
+
+        renderMazzo(giocatore.carte);
+    }
     else console.log("non giocata");
 })
+
+function rimuoviCartaDalMazzo(idCarta) {
+    giocatore.carte = giocatore.carte.filter(carta => carta.id != idCarta);
+
+}

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FIRST - partita</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="src/style.css" />
   </head>
   <body class="bg-green-600 flex flex-col h-screen overflow-hidden">
     <nav class="bg-gray-900 text-white w-full shadow">
@@ -16,15 +16,18 @@
         <div class="text-center">
           <h2 id="hTurno" class="text-md font-medium">Turno 1</h2>
         </div>
-        <form id="formLeaveLobby" class="text-right" action="/game/leaveGame" method="post">
-          <button type="submit" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded">
+        <form
+          id="formLeaveLobby"
+          class="text-right"
+          action="/game/leaveGame"
+          method="post">
+          <button
+            type="submit"
+            class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded">
             Indietro
           </button>
-
         </form>
-
       </div>
-
     </nav>
 
     <div class="relative w-full flex-1 overflow-hidden">
@@ -77,7 +80,7 @@
 
     </div>
 
-    <script src="partita.js"></script>
+    <script src="./JS/partita.js"></script>
   </body>
 
 </html>

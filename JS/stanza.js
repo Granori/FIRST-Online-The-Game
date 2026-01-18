@@ -13,7 +13,8 @@ const divChat = document.getElementById("chat");
 
 const stanza = {
     id: null,
-    nome: null
+    nome: null,
+    players: []
 }
 
 const giocatore = {
@@ -36,6 +37,7 @@ fetch('/api/stanza')
     .then(data => {
         stanza.id = data.lobbyId;
         stanza.nome = data.nome;
+        stanza.players = data.players;
 
         inpNomeStanza.innerText = stanza.nome;
         numGiocatoriStanza.innerText = `${data.players.length}/4`;
@@ -48,6 +50,11 @@ fetch('/api/stanza')
 });
 
 const socket = io();
+
+socket.on("updateUsers", (messaggio) => {
+    stanza.players = messaggio.players;
+
+});
 
 socket.on("userJoin", (messaggio) => {
     console.log(messaggio)
@@ -65,6 +72,10 @@ socket.on("userJoin", (messaggio) => {
 socket.on("messaggio", (messaggio) => {
     caricaMessaggioArrivato(messaggio.sender.name, messaggio.content);
 })
+
+async function prendiDatiGiocatore(idGiocatore) {
+    
+}
 
 function caricaGiocatori(giocatori) {
     giocatori.forEach(g => {
