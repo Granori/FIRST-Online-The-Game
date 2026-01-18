@@ -26,6 +26,7 @@ export class Lobby extends EventEmitter {
 
         //Giocatori
         this.players = []   //Lista di id di giocatori
+        this.players
         this.maxPlayer = 4
 
         this.players.push(hostId)   //Aggiungo anche l'host alla lista di giocatori
@@ -52,6 +53,10 @@ export class Lobby extends EventEmitter {
      * @returns {boolean}
      */
     addPlayer(userId) {
+        if (this.players.find(player => player == userId)) {
+            console.log("Il giocatore si è già unito alla lobby")
+            return false;
+        }
         if (this.canJoin()) {
             this.players.push(userId)
             this.emit("playerJoined", userId);
@@ -108,6 +113,7 @@ export class Lobby extends EventEmitter {
     start(requestingUserId) {
         if (this.hostId == requestingUserId) {
             //Logica per istanziare la partita
+            const partita = 
 
 
             //Evento terminale
@@ -149,6 +155,7 @@ export class Lobby extends EventEmitter {
 
     snapshot() {
         return {
+            nome: this.name,
             id: this.lobbyId,
             hostId: this.hostId,
             players : this.players

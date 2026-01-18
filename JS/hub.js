@@ -209,7 +209,8 @@ formCreaStanza.addEventListener("submit", (e) => {
     })
         .then(response => response.json())
         .then(data => {
-            window.location.href = `/game/joinLobby?lobbyId=${data.lobbyId}`;
+            sessionStorage.setItem("lobbyId", data.lobbyId)
+            window.location.href = `stanza.html`;
         })
         .catch(error => {
             console.error('Errore invio richiesta di creazione stanza', error);

@@ -17,14 +17,26 @@ function initializeServer(httpServer){
         }
     });
 
-    io.use((socket, next) => {
+    
+
+    const lobbySpace = io.of("/lobby")
+
+    lobbySpace.use((socket, next) => {
         //Middleware per gestire la verifica del token dal cookie
+        
         const headers = socket.handshake.headers;
         let cookies = cookie.parse(headers.cookie);
+        console.log(headers)
+        console.log(cookies)
         const token = cookies['auth_token'];
+        console.log(token)
         const decoded = verifyToken(token)
+        console.log(decoded)
         if (!decoded) {
             console.log("Verifica token fallita")
+            socket.disconnect(true)
+            return
+
         } else {
             console.log("Verifica token riuscita per user " + decoded.username)
         }
@@ -35,10 +47,6 @@ function initializeServer(httpServer){
         next()
     })
 
-    const lobbySpace = io.of("/lobby")
-
-    
-
     lobbySpace.on("connection", (socket) => {
         socket.on("joinLobby", (lobbyId) => {
             console.log(`${socket.data.username} con id ${socket.data.id} vuole unirsi alla lobby con id ${lobbyId}`)
@@ -47,7 +55,13 @@ function initializeServer(httpServer){
             //L'unione della classe è già avvenuta precedentemente
             
             //Faccio solo un controllo di autenticità
-            const foundLobby = lobby.lobby.find(lobby => lobby.lobbyId === lobbyId);
+            console.log(lobby.lobby)
+            let foundLobby = null
+            lobby.lobby.forEach(l => {
+                if (l.lobbyId == lobbyId) {
+                    foundLobby = l
+                }
+            });
             if (!foundLobby) {
                 let e = "Lobby non trovata"
                 console.log(e);
@@ -56,7 +70,13 @@ function initializeServer(httpServer){
             }
 
             //Lobby trovata, controllo se il giocatore si è unito a questa lobby
-            const foundPlayer = foundLobby.players.find(player => player == socket)
+            let foundPlayer = null
+            console.log(foundLobby.players)
+            foundLobby.players.forEach(player => {
+                if (player == socket.data.id) {
+                    foundPlayer = true
+                }
+            });
 
             if (!foundPlayer) {
                 let e = "Giocatore non in lobby"
@@ -71,9 +91,9 @@ function initializeServer(httpServer){
             socket.join(lobbyId);
             socket.data.lobbyId = lobbyId;
 
-            lobbySpace.to(lobbyId).emit("lobbyUpdate", lobby.snapshot());
+            lobbySpace.to(lobbyId).emit("lobbyUpdate", foundLobby.snapshot());
 
-            const update = () => lobbySpace.to(lobbyId).emit("lobbyUpdate", lobby.snapshot());
+            const update = () => lobbySpace.to(lobbyId).emit("lobbyUpdate", foundLobby.snapshot());
 
             foundLobby.on("playerJoined", update);
             foundLobby.on("playerLeft", update);

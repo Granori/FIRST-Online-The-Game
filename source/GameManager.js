@@ -54,14 +54,16 @@ function RequestManager(request, response, decoded){
                 response.end(JSON.stringify({
                     lobbyId : lobbyId
                 }))
+                console.log("Lobby creata con successo e risposta inviata")
                 return
                 
             })
             return
             
-        case '/game/joinLobby?lobbyId=':
+        case '/game/joinLobby':
             //true/false
             //Redirect a stanza
+            console.log(`${decoded.username} vuole unirsi alla lobby`)
 
             const lobbyId = urlObj.query.lobbyId
             let found = null
@@ -74,6 +76,7 @@ function RequestManager(request, response, decoded){
 
             if (found == null) {
                 //LobbyId non trovato
+                console.log("Lobby non trovata")
                 response.writeHead(409, {'content-type': 'application/json'})
                 response.end(JSON.stringify({
                     canJoin: false,
@@ -90,6 +93,7 @@ function RequestManager(request, response, decoded){
 
             if (!tmp) {
                 //Unione non riuscita
+                console.log("Unione non riuscita")
                 response.writeHead(409, {'content-type': 'application/json'})
                 response.end(JSON.stringify({
                     canJoin: false,
@@ -104,6 +108,8 @@ function RequestManager(request, response, decoded){
                 canJoin: true,
                 lobbyId : lobbyId
             }))
+
+            console.log("Lobby unita con successo e risposta inviata")
             return
 
     }

@@ -42,7 +42,7 @@ fetch('/api/user')
         console.error('Non è stato possibile ottenere i dati utente', error);
     });
 
-
+/*
 fetch('/api/stanza')
     .then(response => response.json())
     .then(data => {
@@ -58,7 +58,7 @@ fetch('/api/stanza')
     })
     .catch(error => {
         console.error('Non è stato possibile ottenere i dati degli utenti', error);
-    });
+    });*/
 
 const socket = io("/lobby", {
     withCredentials: true
