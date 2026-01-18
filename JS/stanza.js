@@ -70,7 +70,7 @@ socket.on("lobbyUpdate", (data) => {
 });
 
 socket.on("userJoin", (nuovoArrivo) => {
-    caricaMessaggioArrivato("Chat", `${nuovoArrivo} è entrato nella chat!`)
+    caricaMessaggioStanza(`${nuovoArrivo} è entrato nella chat!`)
 });
 
 socket.on("messaggio", (mittente, messaggio) => {
@@ -79,6 +79,7 @@ socket.on("messaggio", (mittente, messaggio) => {
 
 // Carica tutti i giocatori
 async function caricaGiocatori(giocatoriId) {
+    divGiocatori.innerHTML = "";
     for (const giocatoreId of giocatoriId) {
         // Per ogni id ottengo le relative informazioni
         const g = await getInformazioniGiocatore(giocatoreId);
@@ -131,6 +132,17 @@ function caricaMessaggioInviato(text) {
             Tu
         </p>
         <div class="bg-blue-400 w-fit ml-auto rounded-3xl rounded-se-none p-1.5">${text}</div>
+    </div>`
+
+    divChat.innerHTML += messaggio
+}
+
+function caricaMessaggioStanza(text) {
+    let messaggio = document.createElement("div");
+
+    messaggio = `
+    <div class="text-center">
+        <div class="w-full p-1.5">${text}</div>
     </div>`
 
     divChat.innerHTML += messaggio
