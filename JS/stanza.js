@@ -31,6 +31,7 @@ divIdStanza.innerText = stanza.id;
 
 const giocatore = {
     username: "Tu",
+    userId: null,
     isHost: null
 }
 
@@ -38,6 +39,7 @@ fetch('/api/user')
     .then(response => response.json())
     .then(data => {
         giocatore.username = data.user.username;
+        giocatore.userId = data.user.id;
     })
     .catch(error => {
         console.error('Non è stato possibile ottenere i dati utente', error);
@@ -53,27 +55,26 @@ socket.on("lobbyUpdate", (data) => {
     stanza.nome = data.nome;
     stanza.playersId = data.players;
 
+    if (giocatore.userId == data.hostId) {
+        giocatore.isHost = true;
+
+        if (giocatore.isHost) {
+            btnAvviaPartita.disabled = false;
+        }
+    }
+
     inpNomeStanza.value = stanza.nome;
     numGiocatoriStanza.value = `${data.players.length}/4`;
     
     caricaGiocatori(stanza.playersId);
 });
 
-socket.on("userJoin", (messaggio) => {
-    console.log(messaggio)
+socket.on("userJoin", (nuovoArrivo) => {
+    caricaMessaggioArrivato("Chat", `${nuovoArrivo} è entrato nella chat!`)
 });
 
-// const messaggioObj = {
-//     content: messaggio,
-//     sender: {
-//         id: socket.data.userId,
-//         name: socket.data.username
-//     },
-//     timestamp: new Date().toISOString()
-// };
-
-socket.on("messaggio", (messaggio) => {
-    caricaMessaggioArrivato(messaggio.sender.name, messaggio.content);
+socket.on("messaggio", (mittente, messaggio) => {
+    caricaMessaggioArrivato(mittente, messaggio);
 })
 
 // Carica tutti i giocatori
@@ -81,14 +82,6 @@ async function caricaGiocatori(giocatoriId) {
     for (const giocatoreId of giocatoriId) {
         // Per ogni id ottengo le relative informazioni
         const g = await getInformazioniGiocatore(giocatoreId);
-
-        if (g.username === giocatore.username) {
-            giocatore.isHost = g.isHost;
-
-            if (giocatore.isHost) {
-                btnAvviaPartita.disabled = false;
-            }
-        }
 
         addGiocatore(g);
     }
@@ -160,7 +153,7 @@ formChat.addEventListener("submit", (e) => {
 
     if (messaggio.length <= 0) return;
 
-    socket.emit(messaggio);
+    socket.emit("sendMessaggio", messaggio);
     caricaMessaggioInviato(messaggio);
 
     formChat.messaggio.value = "";

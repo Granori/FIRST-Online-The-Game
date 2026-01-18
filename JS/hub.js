@@ -68,8 +68,8 @@ setInterval(aggiornaStanza, 15000);
 function aggiornaStanza() {
     fetch('/game/lobbies')
         .then(response => response.json())
-        .then(data => {
-            caricaStanze(data.stanze);
+        .then(stanze => {
+            caricaStanze(stanze);
         })
         .catch(error => {
             console.error('Non è stato possibile caricare le stanze', error);
