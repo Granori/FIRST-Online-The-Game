@@ -79,13 +79,22 @@ socket.on("messaggio", (mittente, messaggio) => {
 
 // Carica tutti i giocatori
 async function caricaGiocatori(giocatoriId) {
-    divGiocatori.innerHTML = "";
+    let html = "";
+
     for (const giocatoreId of giocatoriId) {
         // Per ogni id ottengo le relative informazioni
         const g = await getInformazioniGiocatore(giocatoreId);
 
-        addGiocatore(g);
+        html += `
+        <div class="rounded-lg p-6 text-center">
+            <img src="${g.pathImg}" alt="Profilo" class="w-45 h-45 rounded-full mx-auto mb-4 object-cover"/>
+
+            <h2 class="text-xl font-semibold text-gray-800">${g.username}</h2>
+
+        </div>`
     }
+    
+    divGiocatori.innerHTML = html;
 }
 
 
@@ -99,16 +108,6 @@ async function getInformazioniGiocatore(giocatoreId) {
         console.error("Non è stato possibile ottenere i dati dell'utente", error);
         return null;
     }
-}
-
-function addGiocatore(g) {
-    divGiocatori.innerHTML += `
-        <div class="rounded-lg p-6 text-center">
-            <img src="${g.pathImg}" alt="Profilo" class="w-45 h-45 rounded-full mx-auto mb-4 object-cover"/>
-
-            <h2 class="text-xl font-semibold text-gray-800">${g.username}</h2>
-
-        </div>`
 }
 
 function caricaMessaggioArrivato(username, text) {
