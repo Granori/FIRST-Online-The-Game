@@ -1,6 +1,8 @@
 const cartaCentro = document.getElementById("cartaCentro");
 const mazzoGiocatore = document.getElementById("mazzo");
 
+const lobbyId = sessionStorage.getItem("lobbyId");
+
 const bgClassMap = {
     red: "bg-red-600",
     blue: "bg-blue-600",
@@ -28,9 +30,23 @@ class Carta {
 const giocatore = {
     carte: null
 }
-
 let cartaTurno = new Carta(8, "blue");
 giocatore.carte = [new Carta(1, "yellow"), new Carta(2, "green"), new Carta(3, "green"), new Carta(3, "blue"), new Carta(4, "red"), new Carta(1, "yellow"), new Carta(2, "green"), new Carta(3, "blue"), new Carta(4, "red")];
+
+
+const socket = io("/game", {
+    withCredentials: true
+});
+socket.emit("joinLobby", lobbyId);
+
+socket.on("updateGame", (numCarteGiocatori, cartaGiocata, mazzo) => {
+    cartaTurno = new Carta(cartaGiocata.numero, cartaGiocata.colore);
+    caricaCartaTurno(cartaTurno);
+
+    giocatore.carte = mazzo;
+    renderMazzo(giocatore.carte);
+});
+
 
 renderMazzo(giocatore.carte);
 caricaCartaTurno(cartaTurno)
@@ -138,15 +154,24 @@ mazzoGiocatore.addEventListener("click", (e) => {
         console.log("giocata");
         rimuoviCartaDalMazzo(id);
 
-        cartaTurno = new Carta(numero, colore);
-        caricaCartaTurno(cartaTurno);
+        socket.emit("playCarta", getCartaDaID(id));
 
-        renderMazzo(giocatore.carte);
+        // cartaTurno = new Carta(numero, colore);
+        // caricaCartaTurno(cartaTurno);
+
+        // renderMazzo(giocatore.carte);
     }
     else console.log("non giocata");
 })
 
+function getCartaDaID(idCarta) {
+    for (const carta in giocatore.carte) {
+        if (carta.id == idCarta) {
+            return carta;
+        }
+    }
+}
+
 function rimuoviCartaDalMazzo(idCarta) {
     giocatore.carte = giocatore.carte.filter(carta => carta.id != idCarta);
-
 }

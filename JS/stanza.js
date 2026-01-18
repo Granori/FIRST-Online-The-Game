@@ -27,7 +27,7 @@ const stanza = {
     nome: null,
     playersId: []
 }
-divIdStanza.innerText = stanza.id;
+divIdStanza.innerText = `ID ${stanza.id}#`;
 
 const giocatore = {
     username: "Tu",
