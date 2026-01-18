@@ -50,12 +50,11 @@ const socket = io("/lobby", {
 socket.emit("joinLobby", lobbyId);
 
 socket.on("lobbyUpdate", (data) => {
-    stanza.id = data.lobbyId;
     stanza.nome = data.nome;
     stanza.playersId = data.players;
 
-    inpNomeStanza.innerText = stanza.nome;
-    numGiocatoriStanza.innerText = `${data.players.length}/4`;
+    inpNomeStanza.value = stanza.nome;
+    numGiocatoriStanza.value = `${data.players.length}/4`;
     
     caricaGiocatori(stanza.playersId);
 });
