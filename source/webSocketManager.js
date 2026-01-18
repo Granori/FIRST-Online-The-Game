@@ -1,16 +1,18 @@
 import {Server} from "socket.io"
 import * as cookie from "cookie"
-import { verifyToken } from "./tokenManager";
+import { verifyToken } from "./tokenManager.js";
 const options = {
 
 }
+
+let lobbyChat
 
 /**
  * 
  * @param {import("http").Server} httpServer 
  */
 function initializeServer(httpServer){
-    const lobbyChat = new Server(httpServer,{
+    lobbyChat = new Server(httpServer,{
         path: "/socket.io/lobby",
         cors: {
             allowedHeaders: ["mode","lobbyId"],
@@ -77,10 +79,6 @@ function initializeServer(httpServer){
         }
         
     });
-
-
-
-
-
-    
 }
+
+export {initializeServer, lobbyChat}
