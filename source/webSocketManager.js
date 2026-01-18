@@ -90,6 +90,7 @@ function initializeServer(httpServer){
 
             socket.join(lobbyId);
             socket.data.lobbyId = lobbyId;
+            socket.to(lobbyId).emit("userJoin", socket.data.username)
 
             lobbySpace.to(lobbyId).emit("lobbyUpdate", foundLobby.snapshot());
 
@@ -101,6 +102,11 @@ function initializeServer(httpServer){
             foundLobby.on("started", () =>
                 lobbySpace.to(lobbyId).emit("start")
             );
+
+            socket.on("sendMessaggio", (messaggio) => {
+                
+                socket.to(lobbyId).except(socket.id).emit("messaggio", socket.data.username, messaggio)
+            })
 
             
             socket.on("startGame", () => {
