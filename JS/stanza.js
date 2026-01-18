@@ -60,7 +60,9 @@ fetch('/api/stanza')
         console.error('Non è stato possibile ottenere i dati degli utenti', error);
     });
 
-const socket = io();
+const socket = io("/lobby", {
+    withCredentials: true
+});
 socket.emit("joinLobby", lobbyId);
 
 socket.on("lobbyUpdate", (messaggio) => {
@@ -157,18 +159,9 @@ formLeaveLobby.addEventListener("submit", (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    fetch('/game/leaveLobby', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            "idLobby": stanza.id
-        })
-    })
-        .catch(error => {
-            console.error('Errore uscita dalla lobby', error);
-        });
+    socket.emit("disconnect", null);
+    sessionStorage.clear();
+    window.location.href = "hub.html";
 })
 
 formChat.addEventListener("submit", (e) => {
