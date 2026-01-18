@@ -155,59 +155,75 @@ registraForm.addEventListener("submit", (e) => {
     if (managerRegister()) inviaRegister();
 });
 
-function managerRegister() {
+registraForm.username.addEventListener("keyup", () => {
+    managerRegister(true, false);
+})
+
+rgPasswordForm.addEventListener("keyup", () => {
+    managerRegister(false, true);
+})
+
+function managerRegister(validateUsername = true, validatePassword = true) {
     const username = registraForm.username.value;
     const password = registraForm.password.value;
 
     let errUsername = false;
-    if (regexUsername.test(username)) {
-        erroreUsername.classList.add("hidden");
-    }
-    else {
-        erroreUsername.classList.remove("hidden");
-        erroreUsernameEsistente.add("hidden");
-        errUsername = true;
-    }
-
     let errPassword = false;
-    if (!regexMaiusc.test(password)) {
-        erroreMaiusc.classList.add("text-red-600");
-        errPassword = true;
-    }
-    else {
-        erroreMaiusc.classList.remove("text-red-600");
-    }
-
-    if (!regexNum.test(password)) {
-        erroreCifra.classList.add("text-red-600");
-        errPassword = true;
-    }
-    else {
-        erroreCifra.classList.remove("text-red-600");
+    if (validateUsername){
+        if (regexUsername.test(username)) {
+                erroreUsername.classList.add("hidden");
+        }
+        else {
+            erroreUsername.classList.remove("hidden");
+            erroreUsernameEsistente.add("hidden");
+            errUsername = true;
+        }
     }
 
-    if (!regexSpec.test(password)) {
-        erroreSpecial.classList.add("text-red-600");
-        errPassword = true;
-    }
-    else {
-        erroreSpecial.classList.remove("text-red-600");
-    }
+    if (validatePassword) {
+        
+        if (!regexMaiusc.test(password)) {
+            erroreMaiusc.classList.add("text-red-600");
+            errPassword = true;
+        }
+        else {
+            erroreMaiusc.classList.remove("text-red-600");
+        }
 
-    if (!regexLung.test(password)) {
-        erroreLunghezza.classList.add("text-red-600");
-        errPassword = true;
-    }
-    else {
-        erroreLunghezza.classList.remove("text-red-600");
-    }
+        if (!regexNum.test(password)) {
+            erroreCifra.classList.add("text-red-600");
+            errPassword = true;
+        }
+        else {
+            erroreCifra.classList.remove("text-red-600");
+        }
 
-    if (errPassword) {
-        errorePassword.classList.remove("hidden");
+        if (!regexSpec.test(password)) {
+            erroreSpecial.classList.add("text-red-600");
+            errPassword = true;
+        }
+        else {
+            erroreSpecial.classList.remove("text-red-600");
+        }
+
+        if (!regexLung.test(password)) {
+            erroreLunghezza.classList.add("text-red-600");
+            errPassword = true;
+        }
+        else {
+            erroreLunghezza.classList.remove("text-red-600");
+        }
+
+        if (errPassword) {
+            errorePassword.classList.remove("hidden");
+        }
+        else {
+            errorePassword.classList.add("hidden");
+        }
     }
-    else {
-        errorePassword.classList.add("hidden");
-    }
+    
+
+    
 
     if (errUsername || errPassword) return false;
     return true;

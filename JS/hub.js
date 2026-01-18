@@ -17,7 +17,7 @@ const btnCambiaForm = document.getElementById("btnChangeUsername");
 const btnAnnullaForm = document.getElementById("btnUndoUsername");
 const inputNomeForm = formProfilo.querySelector("input");
 const divBottoniForm = document.getElementById("divButtons");
-const errCambiaInfo = document.getElementById("errChange");
+const errCambiaInfo = document.getElementById("errorChange");
 
 const formCreaStanza = document.getElementById("formCreaStanza");
 const errCreaStanza = document.getElementById("erroreCreazioneStanza");

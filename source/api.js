@@ -95,7 +95,7 @@ async function API_manager(request, response){
                         //TODO: check validità del percorso
                         console.log("Sto per cambiare il path dell'immagine")
                         db.changePathImgById.run(pathImg, decoded.id)
-                        statusCode = 204
+                        statusCode = 201
                         objResponse.executed = true
                         objResponse.message = "Immagine cambiata con successo"
                     }
@@ -139,7 +139,11 @@ async function API_manager(request, response){
                     } 
                     
                     response.writeHead(statusCode, { 'Content-Type': 'application/json' })
-                    response.end(JSON.stringify(objResponse))
+                    console.log(objResponse, "\n", JSON.stringify(objResponse))
+                    if (statusCode == 204) 
+                        response.end();
+                    else
+                        response.end(JSON.stringify(objResponse))
 
                     
                 });
