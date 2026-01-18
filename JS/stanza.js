@@ -99,7 +99,7 @@ async function getInformazioniGiocatore(giocatoreId) {
     try {
         const response = await fetch(`/api/user?${giocatoreId}`);
         const data = await response.json();
-        console.log(data, data.user.username)
+        
         return new Player(data.user.username, data.user.pathImg);
     } catch (error) {
         console.error("Non è stato possibile ottenere i dati dell'utente", error);
@@ -107,10 +107,9 @@ async function getInformazioniGiocatore(giocatoreId) {
     }
 }
 
-
 function addGiocatore(g) {
     divGiocatori.innerHTML += `
-        <div class="hidden rounded-lg p-6 text-center">
+        <div class="rounded-lg p-6 text-center">
             <img src="${g.pathImg}" alt="Profilo" class="w-45 h-45 rounded-full mx-auto mb-4 object-cover"/>
 
             <h2 class="text-xl font-semibold text-gray-800">${g.username}</h2>
