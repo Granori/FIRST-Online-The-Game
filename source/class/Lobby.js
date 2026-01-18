@@ -85,6 +85,10 @@ export class Lobby extends EventEmitter {
         if (result) {
             //Se la lista cambia, cambio la lista della classe
             this.players = temp
+            if (temp.length == 0) {
+                this.destroy()
+                return
+            }
 
             //Controllo se è host
             if (userId == this.hostId) {
@@ -101,8 +105,13 @@ export class Lobby extends EventEmitter {
      * Promuove un nuovo host se l'host abbandona la partita
      */
     promoteNewHost() {
-        this.hostId = this.players[0]
-        this.emit("hostChanged", this.hostId)
+        if (!this.isEmpty()) {
+            this.hostId = this.players[0]
+            this.emit("hostChanged", this.hostId)
+        } else {
+            this.destroy()
+        }
+        
     }
 
 
@@ -127,21 +136,21 @@ export class Lobby extends EventEmitter {
      * @returns {boolean}
      */
     isEmpty() {
-        return this.players.size === 0;
+        return this.players.length == 0;
     }
 
     destroy() {
-        if (this.isEmpty()) {
-            let tmp = []
-            lobby.forEach(l => {
-                if (this.lobbyId != l.lobbyId) {
-                    tmp.push(l)
-                }
-            });
+        console.log(`La lobby ${this.name} sta per essere eliminata`)
+        let tmp = []
+        lobby.forEach(l => {
+            if (this.lobbyId != l.lobbyId) {
+                tmp.push(l)
+            }
+        });
 
-            lobby = tmp;
-
-        }
+        lobby = tmp;
+        console.log(`La lobby ${this.name} è stata eliminata`)
+        console.log(JSON.stringify(lobby))
     }
 
     toString() {

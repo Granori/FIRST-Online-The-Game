@@ -56,13 +56,15 @@ function initializeServer(httpServer){
             
             //Faccio solo un controllo di autenticità
             console.log(lobby.lobby)
+            /*
             let foundLobby = null
             lobby.lobby.forEach(l => {
                 if (l.lobbyId == lobbyId) {
                     foundLobby = l
                 }
-            });
-            if (!foundLobby) {
+            });*/
+            const foundLobby = lobby.lobby.find(l => l.lobbyId == lobbyId);
+            if (foundLobby == undefined) {
                 let e = "Lobby non trovata"
                 console.log(e);
                 socket.emit("joinFailed", e);
@@ -70,15 +72,17 @@ function initializeServer(httpServer){
             }
 
             //Lobby trovata, controllo se il giocatore si è unito a questa lobby
+            /*
             let foundPlayer = null
             console.log(foundLobby.players)
             foundLobby.players.forEach(player => {
                 if (player == socket.data.id) {
-                    foundPlayer = true
+                    foundPlayer = player
                 }
-            });
+            });*/
+            const foundPlayer = foundLobby.players.find(player => player == socket.data.id);
 
-            if (!foundPlayer) {
+            if (foundPlayer == undefined) {
                 let e = "Giocatore non in lobby"
                 console.log(socket.data.username + " non in lobby " + foundLobby.name)
                 socket.emit("joinFailed", e);
@@ -114,10 +118,14 @@ function initializeServer(httpServer){
             });
 
             socket.on("disconnect", () => {
+                console.log('\x1b[36m%s\x1b[0m', `Il giocatore ${socket.data.username} ha abbandonato la lobby N°${socket.data.lobbyId}`)
+                console.log('\x1b[36m%s\x1b[0m', JSON.stringify(foundLobby))
                 foundLobby.removePlayer(socket.data.id);
+                console.log('\x1b[36m%s\x1b[0m', JSON.stringify(foundLobby))
                 if (foundLobby.isEmpty()) {
                     foundLobby.destroy()
                 }
+                socket.disconnect(true)
             })
     })
 })
