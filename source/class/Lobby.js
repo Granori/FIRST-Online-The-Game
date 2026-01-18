@@ -17,6 +17,7 @@ export class Lobby extends EventEmitter {
      * @param {String} hostId 
      */
     constructor(name, hostId) {
+        super();
         this.name = name
 
         //Id lobby

@@ -43,10 +43,8 @@ function RequestManager(request, response, decoded){
             request.on('end', async () =>{
                 const data = JSON.parse(body)
                 const nomeLobby = data.nome
-                
-                const player = new LobbyPlayer(decoded.id, decoded.username)
 
-                const nuovaLobby = new Lobby(nomeLobby)
+                const nuovaLobby = new Lobby(nomeLobby, decoded.id)
 
                 const lobbyId = nuovaLobby.lobbyId
                 
@@ -66,15 +64,15 @@ function RequestManager(request, response, decoded){
             //Redirect a stanza
 
             const lobbyId = urlObj.query.lobbyId
-            let lobby = null
+            let found = null
 
             lobby.forEach(l => {
                 if (l.lobbyId == lobbyId) {
-                    lobby = l
+                    found = l;
                 }
             });
 
-            if (lobby == null) {
+            if (found == null) {
                 //LobbyId non trovato
                 response.writeHead(409, {'content-type': 'application/json'})
                 response.end(JSON.stringify({
@@ -88,7 +86,7 @@ function RequestManager(request, response, decoded){
             //Lobby trovata
 
             //Provo ad unirmi
-            let tmp = lobby.addPlayer(decoded.id)
+            let tmp = found.addPlayer(decoded.id)
 
             if (!tmp) {
                 //Unione non riuscita

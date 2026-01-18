@@ -66,7 +66,7 @@ aggiornaStanza();
 setInterval(aggiornaStanza, 15000);
 
 function aggiornaStanza() {
-    fetch('/api/lobbies')
+    fetch('/game/lobbies')
         .then(response => response.json())
         .then(data => {
             caricaStanze(data.stanze);
@@ -351,7 +351,7 @@ formProfilo.addEventListener("submit", (e) => {
         })
         .then(result => {
             //TODO: gestione degli errori della API
-            if (result.valido) {
+            if (result.executed) {
                 giocatore.username = nome;
                 giocatore.img = modificheTemp.img;
 
