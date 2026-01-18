@@ -7,6 +7,7 @@ import * as db from './dbManager.js';
 import { ClientRequest, ServerResponse } from 'http';
 import { generateToken, verifyToken } from './tokenManager.js';
 import * as auth from './authenticationHandler.js';
+import { RequestManager } from './GameManager.js';
 
 
 
@@ -42,13 +43,20 @@ async function API_manager(request, response){
             response.end(JSON.stringify({ token_valid: false, message: 'Unauthorized: No token provided' }));
             return;
         }
-        const decoded = await verifyToken(token);
+        const decoded = verifyToken(token);
         if (decoded == null) {
             response.writeHead(401, { 'Content-Type': 'application/json' });
             response.end(JSON.stringify({ token_valid: false, message: 'Unauthorized: Invalid token' }));
             return;
         }
         //Token valido
+
+
+        //Implementazione Game manager
+        if (urlObj.pathname.startsWith("/game")) {
+            RequestManager(request, response, decoded)
+            return;
+        }
 
         switch (urlObj.pathname) {
             //Aggiungere qui le altre rotte API protette

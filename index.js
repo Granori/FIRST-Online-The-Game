@@ -3,7 +3,6 @@ import path from 'path';
 import url from 'url';
 import http from 'http';
 import { API_manager } from './source/api.js';
-import {GameManager} from './source/GameManager.js'
 import { initializeServer } from './source/webSocketManager.js';
 //cookie, bcrypt, JWT per autenticazione
 
@@ -40,16 +39,9 @@ async function requestHandler(request, response) {
 
     const objURL = url.parse(request.url, true);
 
-    if (objURL.pathname.startsWith("/api")) {
+    if (objURL.pathname.startsWith("/api") || objURL.pathname.startsWith("/game")) {
         //Gestione API
         API_manager(request, response);
-        return;
-    }
-    
-    if (objURL.pathname.startsWith("/game")) {
-        //GameManager()
-        response.statusCode = 501;
-        response.end()
         return;
     }
 

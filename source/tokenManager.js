@@ -13,7 +13,7 @@ async function generateToken(id, username) {
     return token;
 }
 
-async function verifyToken(token) {
+function verifyToken(token) {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         return decoded;
