@@ -165,7 +165,7 @@ divStanze.addEventListener("click", (e) => {
         .then(data => {
             if (data.canJoin) {
                 sessionStorage.setItem("lobbyId", actionId);
-                window.location.href = `/game/joinLobby?lobbyId=${actionId}`;
+                window.location.href = "stanza.html";
             }
             else {
                 console.log("Richiesta ingresso negata");

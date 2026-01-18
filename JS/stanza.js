@@ -90,7 +90,7 @@ async function caricaGiocatori(giocatoriId) {
 
 async function getInformazioniGiocatore(giocatoreId) {
     try {
-        const response = await fetch(`/api/user?${giocatoreId}`);
+        const response = await fetch(`/api/user?id_utente=${giocatoreId}`);
         const data = await response.json();
         
         return new Player(data.user.username, data.user.pathImg);
@@ -140,7 +140,7 @@ formLeaveLobby.addEventListener("submit", (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    socket.emit("disconnect", null);
+    socket.disconnect()
     sessionStorage.clear();
     window.location.href = "hub.html";
 })
