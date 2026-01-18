@@ -11,10 +11,21 @@ const listaGiocatori = divGiocatori.querySelectorAll("div");
 const formChat = document.getElementById("chatForm");
 const divChat = document.getElementById("chat");
 
+const formAvvio = document.getElementById("formAvvio");
+
+const lobbyId = sessionStorage.getItem("lobbyId");
+
+class Player {
+    constructor(username, pathImg) {
+        this.username = username;
+        this.pathImg = pathImg;
+    }
+}
+
 const stanza = {
     id: null,
     nome: null,
-    players: []
+    playersId: []
 }
 
 const giocatore = {
@@ -37,23 +48,24 @@ fetch('/api/stanza')
     .then(data => {
         stanza.id = data.lobbyId;
         stanza.nome = data.nome;
-        stanza.players = data.players;
+        stanza.playersId = data.players;
 
         inpNomeStanza.innerText = stanza.nome;
         numGiocatoriStanza.innerText = `${data.players.length}/4`;
         
         divIdStanza.innerText = stanza.id;
-        caricaGiocatori(data.players);
+        caricaGiocatori(stanza.playersId);
     })
     .catch(error => {
         console.error('Non è stato possibile ottenere i dati degli utenti', error);
-});
+    });
 
 const socket = io();
+socket.emit("joinLobby", lobbyId);
 
-socket.on("updateUsers", (messaggio) => {
-    stanza.players = messaggio.players;
-
+socket.on("lobbyUpdate", (messaggio) => {
+    stanza.playersId = messaggio.players;
+    caricaGiocatori(stanza.playersId);
 });
 
 socket.on("userJoin", (messaggio) => {
@@ -73,22 +85,37 @@ socket.on("messaggio", (messaggio) => {
     caricaMessaggioArrivato(messaggio.sender.name, messaggio.content);
 })
 
-async function prendiDatiGiocatore(idGiocatore) {
-    
-}
+// Carica tutti i giocatori
+async function caricaGiocatori(giocatoriId) {
+    for (const giocatoreId of giocatoriId) {
+        // Per ogni id ottengo le relative informazioni
+        const g = await getInformazioniGiocatore(giocatoreId);
 
-function caricaGiocatori(giocatori) {
-    giocatori.forEach(g => {
         if (g.username === giocatore.username) {
             giocatore.isHost = g.isHost;
+
             if (giocatore.isHost) {
                 btnAvviaPartita.disabled = false;
             }
         }
 
         addGiocatore(g);
-    });
+    }
 }
+
+
+async function getInformazioniGiocatore(giocatoreId) {
+    try {
+        const response = await fetch(`/api/user?${giocatoreId}`);
+        const data = await response.json();
+
+        return new Player(data.username, data.pathImg);
+    } catch (error) {
+        console.error("Non è stato possibile ottenere i dati dell'utente", error);
+        return null;
+    }
+}
+
 
 function addGiocatore(g) {
     divGiocatori.innerHTML += `
@@ -156,4 +183,13 @@ formChat.addEventListener("submit", (e) => {
     caricaMessaggioInviato(messaggio);
 
     formChat.messaggio.value = "";
+})
+
+formAvvio.addEventListener("submit", (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (giocatore.isHost) {
+        socket.emit("startGame", null);
+    }
 })

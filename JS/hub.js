@@ -66,7 +66,7 @@ aggiornaStanza();
 setInterval(aggiornaStanza, 15000);
 
 function aggiornaStanza() {
-    fetch('/api/stanze')
+    fetch('/api/lobbies')
         .then(response => response.json())
         .then(data => {
             caricaStanze(data.stanze);
@@ -155,12 +155,25 @@ function disattivaInput() {
 
 divStanze.addEventListener("click", (e) => {
     e.stopPropagation();
-    const action = e.target.dataset.id;
-    if (!action) return;
+    const actionId = e.target.dataset.id;
+    if (!actionId) return;
 
-    console.log("Entra nella stanza:", action);
+    console.log("Entra nella stanza:", actionId);
     
-    fetch(`/game/joinLobby?lobbyId=${action}`);
+    fetch(`/game/joinLobby?lobbyId=${actionId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.canJoin) {
+                sessionStorage.setItem("lobbyId", actionId);
+            }
+            else {
+                console.log("Richiesta ingresso negata");
+            }
+        })
+        .catch(error => {
+            console.error('Non è stato possibile inviare la richiesta di unione', error);
+        });
+
 });
 
 // Evento per aprire/chiudere la tendina con click diretti
