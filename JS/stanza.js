@@ -23,10 +23,11 @@ class Player {
 }
 
 const stanza = {
-    id: null,
+    id: lobbyId,
     nome: null,
     playersId: []
 }
+divIdStanza.innerText = stanza.id;
 
 const giocatore = {
     username: "Tu",
@@ -42,31 +43,20 @@ fetch('/api/user')
         console.error('Non è stato possibile ottenere i dati utente', error);
     });
 
-/*
-fetch('/api/stanza')
-    .then(response => response.json())
-    .then(data => {
-        stanza.id = data.lobbyId;
-        stanza.nome = data.nome;
-        stanza.playersId = data.players;
-
-        inpNomeStanza.innerText = stanza.nome;
-        numGiocatoriStanza.innerText = `${data.players.length}/4`;
-        
-        divIdStanza.innerText = stanza.id;
-        caricaGiocatori(stanza.playersId);
-    })
-    .catch(error => {
-        console.error('Non è stato possibile ottenere i dati degli utenti', error);
-    });*/
 
 const socket = io("/lobby", {
     withCredentials: true
 });
 socket.emit("joinLobby", lobbyId);
 
-socket.on("lobbyUpdate", (messaggio) => {
-    stanza.playersId = messaggio.players;
+socket.on("lobbyUpdate", (data) => {
+    stanza.id = data.lobbyId;
+    stanza.nome = data.nome;
+    stanza.playersId = data.players;
+
+    inpNomeStanza.innerText = stanza.nome;
+    numGiocatoriStanza.innerText = `${data.players.length}/4`;
+    
     caricaGiocatori(stanza.playersId);
 });
 
