@@ -69,6 +69,7 @@ function aggiornaStanza() {
     fetch('/game/lobbies')
         .then(response => response.json())
         .then(stanze => {
+            console.log(stanze)
             caricaStanze(stanze);
         })
         .catch(error => {
@@ -83,8 +84,8 @@ function caricaStanze(stanze) {
             <tr>
                 <td class="px-4 py-2 text-left">${stanza.nome}</td>
                 <td class="px-4 py-2 text-left">${stanza.id}</td>
-                <td class="px-4 py-2 text-left">${stanza.host}</td>
-                <td class="px-4 py-2 text-right">${stanza.numGiocatori}</td>
+                <td class="px-4 py-2 text-left">N/D</td>
+                <td class="px-4 py-2 text-right">${stanza.players}/${stanza.maxPlayers}</td>
                 <td class="px-4 py-2 text-right">
                     <button class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-500 disabled:bg-gray-600 disabled:text-gray-200 disabled:cursor-not-allowed disabled:hover:bg-gray-400" ${stanza.numGiocatori >= 4 ? "disabled" : ""} data-id="${stanza.id}">
                         Entra

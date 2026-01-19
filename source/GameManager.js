@@ -20,6 +20,7 @@ function RequestManager(request, response, decoded){
      */
     switch (urlObj.pathname){
         case '/game/lobbies':
+            console.log("Richiesta di tutte le lobby")
             let result = []
             lobby.forEach(l => {
                 result.push(l.toString())
@@ -27,6 +28,7 @@ function RequestManager(request, response, decoded){
                 //Id
                 //Numero giocatori
             });
+            console.log(JSON.stringify(result))
             response.writeHead(200, {'content-type': 'application/json'})
             response.end(JSON.stringify(result))
             return
