@@ -46,7 +46,7 @@ export class Carta {
 
         let colore = colori[coloreIndex]
         let numero = ""
-        if (colore = "jolly"){
+        if (colore == "jolly"){
             //Generazione Jolly
             random = Math.floor(Math.random() * jolly.length);
             numero = jolly[random]

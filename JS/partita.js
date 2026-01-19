@@ -200,7 +200,7 @@ function rimuoviCartaDalMazzo(idCarta) {
 
 function inizializzaMazzoGiocatore(idGiocatore, numCarte) {
     let mazzo = prendiPrimoMazzoLibero();
-    mazzo.dataset.id = idGiocatore;
+    mazzo.dataset.giocatore = idGiocatore;
     mazzo.querySelector("span").innerHTML = numCarte;
 
     mazzo.classList.remove("hidden");
@@ -218,7 +218,7 @@ function prendiPrimoMazzoLibero() {
 function aggiornaMazzoOtherGiocatore(idGiocatore, numCarte) {
     // Cerco e aggiorno il num di carte del mazzo del giocatore specificato
     mazziOtherGiocatori.forEach(mazzo => {
-        if (mazzo.dataset.idPlayer == idGiocatore) {
+        if (mazzo.dataset.giocatore == idGiocatore) {
             mazzo.querySelector("span").innerHTML = numCarte;
             return;
         }

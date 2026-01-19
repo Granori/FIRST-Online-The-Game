@@ -18,9 +18,17 @@ export class Giocatore {
     }
 
     draw(numero = 1){
-        for (let i = 0; i < array.length; i++) {
+        for (let i = 0; i < numero; i++) {
             this.mano.draw()
         }
+    }
+    
+    /**
+     * 
+     * @returns {number} carte rimanenti
+     */
+    carteRimanenti(){
+        return this.mano.carteRimanenti();
     }
 
 
@@ -40,7 +48,7 @@ export class Giocatore {
     toStringOpponent(){
         return {
             id: this.id,
-            numeroCarte: this.mano.carte.length
+            numeroCarte: this.carteRimanenti()
         }
     }
 }

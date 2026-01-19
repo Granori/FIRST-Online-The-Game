@@ -1,5 +1,6 @@
 import { Giocatore } from "./Giocatore.js";
 import { EventEmitter } from "events";
+import { Carta } from "./Carta.js";
 
 export let partite = []
 
@@ -32,7 +33,7 @@ export class Partita extends EventEmitter {
         //Variabili della logica del gioco
         this.turno = 0
         this.verso = +1; //-1 per senso opposto
-        this.latestCard = null
+        this.latestCard = new Carta(1,"rosso")
         this.canplay = true     //Ci sono alcune carte che richiedono un input aggiuntivo prima di continuare il gioco
         this.objrisposta = null
 
@@ -122,10 +123,16 @@ export class Partita extends EventEmitter {
             }
             this.latestCard = objRisposta.cardPlayed
             this.emit("cardPlayed")
-            nextTurno(objRisposta.skip) //Gestisco lo skip direttamente nel turno
+            this.nextTurno(objRisposta.skip) //Gestisco lo skip direttamente nel turno
             return true
         } else return false
 
+    }
+
+    checkWinCondition(){
+        for (const giocatore of this.giocatori) {
+            
+        }
     }
 
     nextTurno(skip = true){
