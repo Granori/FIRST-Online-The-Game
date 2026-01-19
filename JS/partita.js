@@ -21,7 +21,7 @@ const textClassMap = {
     blue: "text-blue-600",
     verde: "text-green-600",
     giallo: "text-yellow-600",
-    jolly: "text-gray-600"
+    jolly: "text-black"
 };
 
 class Carta {
