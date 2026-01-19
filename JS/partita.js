@@ -200,17 +200,14 @@ function rimuoviCartaDalMazzo(idCarta) {
 
 function inizializzaMazzoGiocatore(idGiocatore, numCarte) {
     let mazzo = prendiPrimoMazzoLibero();
-    mazzo.dataset.idPlayer = idGiocatore;
+    mazzo.dataset.id = idGiocatore;
     mazzo.querySelector("span").innerHTML = numCarte;
 
     mazzo.classList.remove("hidden");
 }
 
 function prendiPrimoMazzoLibero() {
-    // console.log(mazziOtherGiocatori);
     for(const mazzoOther of mazziOtherGiocatori) {
-        // console.log(mazzoOther)
-        // console.log(mazzoOther.classList)
         if (mazzoOther.classList.contains("hidden")) {
             return mazzoOther;
         }
