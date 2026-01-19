@@ -1,7 +1,13 @@
 const cartaCentro = document.getElementById("cartaCentro");
 const mazzoGiocatore = document.getElementById("mazzo");
 
+const mazziOtherGiocatori = document.querySelectorAll("[data-pos]");
+
 const lobbyId = sessionStorage.getItem("lobbyId");
+
+const numTurno = document.getElementById("hTurno");
+
+const mazzoPesca = document.getElementById("btnPesca");
 
 const bgClassMap = {
     red: "bg-red-600",
@@ -28,10 +34,9 @@ class Carta {
 }
 
 const giocatore = {
-    carte: null
+    carte: [],
+    canPlay: false
 }
-let cartaTurno = new Carta(8, "blue");
-giocatore.carte = [new Carta(1, "yellow"), new Carta(2, "green"), new Carta(3, "green"), new Carta(3, "blue"), new Carta(4, "red"), new Carta(1, "yellow"), new Carta(2, "green"), new Carta(3, "blue"), new Carta(4, "red")];
 
 
 const socket = io("/partita", {
@@ -41,11 +46,24 @@ socket.emit("joinPartita", lobbyId);
 
 //TODO: Il socket restituisce lo snapshot della partita, quindi rifattorizzare
 //TODO: Gestione ulteriori eventi
-socket.on("update", (numCarteGiocatori, cartaGiocata, mazzo) => {
-    cartaTurno = new Carta(cartaGiocata.numero, cartaGiocata.colore);
+socket.on("update", (snapshot) => {
+    numTurno.innerHTML = snapshot.turno;
+
+    // Aggiorno informazioni del giocatore
+    giocatore.canPlay = snapshot.canPlay;
+    giocatore.carte = [];
+    snapshot.you.mano.forEach(carta => {
+        giocatore.carte.push(new Carta(carta.numero, carta.colore))
+    })
+
+    // Aggiorno informazioni degli altri giocatori
+    snapshot.opponents.forEach(opponent => {
+        aggiornaMazzoOtherGiocatore(opponent.id, opponent.numeroCarte);
+    })
+
+    cartaTurno = new Carta(snapshot.latestCard.numero, snapshot.latestCard.colore);
     caricaCartaTurno(cartaTurno);
 
-    giocatore.carte = mazzo;
     renderMazzo(giocatore.carte);
 });
 
@@ -152,18 +170,22 @@ mazzoGiocatore.addEventListener("click", (e) => {
     const colore = action.dataset.colore;
     const numero = action.dataset.numero;
 
-    if (colore == cartaTurno.colore || numero == cartaTurno.numero) {
+    if ((colore == cartaTurno.colore || numero == cartaTurno.numero) && giocatore.canPlay) {
         console.log("giocata");
-        rimuoviCartaDalMazzo(id);
 
-        socket.emit("playCarta", getCartaDaID(id));
+        socket.emit("playCarta", id);
 
-        // cartaTurno = new Carta(numero, colore);
-        // caricaCartaTurno(cartaTurno);
-
-        // renderMazzo(giocatore.carte);
+        giocatore.canPlay = false;
     }
     else console.log("non giocata");
+})
+
+mazzoPesca.addEventListener("click", (e) => {
+    const action = e.target.closest("[data-action]");
+    if (!action) return;
+
+    socket.emit("drawCarta");
+    giocatore.canPlay = false;
 })
 
 function getCartaDaID(idCarta) {
@@ -176,4 +198,34 @@ function getCartaDaID(idCarta) {
 
 function rimuoviCartaDalMazzo(idCarta) {
     giocatore.carte = giocatore.carte.filter(carta => carta.id != idCarta);
+}
+
+function inizializzaMazzoGiocatore(idGiocatore, numCarte) {
+    let mazzo = prendiPrimoMazzoLibero();
+    mazzo.dataset.idPlayer = idGiocatore;
+    mazzo.querySelector("span").innerHTML = numCarte;
+
+    mazzo.classList.remove("hidden");
+}
+
+function prendiPrimoMazzoLibero() {
+    for(const mazzoOther in mazziOtherGiocatori) {
+        if (mazzoOther.classList.contains("hidden")) {
+            return mazzoOther;
+        }
+    }
+    return null;
+}
+
+function aggiornaMazzoOtherGiocatore(idGiocatore, numCarte) {
+    // Cerco e aggiorno il num di carte del mazzo del giocatore specificato
+    mazziOtherGiocatori.forEach(mazzo => {
+        if (mazzo.dataset.idPlayer == idGiocatore) {
+            mazzo.querySelector("span").innerHTML = numCarte;
+            return;
+        }
+    })
+
+    // Se non lo trovo, gli assegno un nuovo mazzo
+    inizializzaMazzoGiocatore(idGiocatore, numCarte);
 }

@@ -77,6 +77,10 @@ socket.on("messaggio", (mittente, messaggio) => {
     caricaMessaggioArrivato(mittente, messaggio);
 })
 
+socket.on("start", () => {
+    window.location.href = "partita.html";
+})
+
 // Carica tutti i giocatori
 async function caricaGiocatori(giocatoriId) {
     let html = "";

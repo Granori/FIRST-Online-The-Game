@@ -42,7 +42,7 @@
 
                 <!-- carta frontale -->
                 <div class="relative w-24 h-36 bg-gray-800 border-4 border-white rounded-xl shadow-xl flex items-center justify-center transition-all duration-200 hover:-translate-y-2 hover:scale-105 active:translate-y-0 active:scale-95 cursor-pointer">
-                    <span class="absolute text-white text-xl font-bold">PESCA</span>
+                    <span id="btnPesca" data-action="pesca" class="absolute text-white text-xl font-bold">PESCA</span>
                 </div>
 
             </div>
@@ -60,19 +60,19 @@
       </div>
 
       <!-- MAZZO A SINISTRA (orizzontale) -->
-      <div class="absolute left-4 top-1/2 -translate-y-1/2 rotate-90">
+      <div data-pos="sx" class="hidden absolute left-4 top-1/2 -translate-y-1/2 rotate-90">
         <div class="w-26 h-39 bg-gray-800 border-4 border-white rounded-xl flex items-center justify-center">
             <span class="absolute text-white text-5xl font-bold">7</span>
         </div>
       </div>
       <!-- MAZZO IN ALTO -->
-      <div class="absolute top-4 left-1/2 -translate-x-1/2">
+      <div data-pos="top" class="hidden absolute top-4 left-1/2 -translate-x-1/2">
         <div class="w-26 h-39 bg-gray-800 border-4 border-white rounded-xl flex items-center justify-center">
             <span class="absolute text-white text-5xl font-bold">7</span>
         </div>
       </div>
       <!-- MAZZO A DESTRA (orizzontale) -->
-      <div class="absolute right-4 top-1/2 -translate-y-1/2 -rotate-90">
+      <div data-pos="dx" class="hidden absolute right-4 top-1/2 -translate-y-1/2 -rotate-90">
         <div class="w-26 h-39 bg-gray-800 border-4 border-white rounded-xl flex items-center justify-center">
             <span class="absolute text-white text-5xl font-bold">7</span>
         </div>
