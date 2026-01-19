@@ -1,4 +1,4 @@
-import { Carta } from "./Carta";
+import { Carta } from "./Carta.js";
 
 const carteIniziali = 7
 

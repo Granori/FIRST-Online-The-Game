@@ -1,5 +1,5 @@
-import { Carta } from "./Carta";
-import { Mano } from "./Mano";
+import { Carta } from "./Carta.js";
+import { Mano } from "./Mano.js";
 
 
 export class Giocatore {

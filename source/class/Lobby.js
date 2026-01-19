@@ -1,6 +1,6 @@
 let lobbyProgressivo = 0
 import { EventEmitter } from "events";
-import { Partita, partite } from "./Partita";
+import { Partita, partite } from "./Partita.js";
 
 /**
  * Lista statica di lobby
