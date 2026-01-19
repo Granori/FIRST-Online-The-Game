@@ -10,16 +10,18 @@ const numTurno = document.getElementById("hTurno");
 const mazzoPesca = document.getElementById("btnPesca");
 
 const bgClassMap = {
-    red: "bg-red-600",
-    blue: "bg-blue-600",
-    green: "bg-green-600",
-    yellow: "bg-yellow-600",
+    rosso: "bg-red-600",
+    blu: "bg-blue-600",
+    verde: "bg-green-600",
+    giallo: "bg-yellow-600",
+    jolly: "bg-black"
 };
 const textClassMap = {
-    red: "text-red-600",
+    rosso: "text-red-600",
     blue: "text-blue-600",
-    green: "text-green-600",
-    yellow: "text-yellow-600",
+    verde: "text-green-600",
+    giallo: "text-yellow-600",
+    jolly: "text-gray-600"
 };
 
 class Carta {
