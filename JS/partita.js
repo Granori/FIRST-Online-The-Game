@@ -34,12 +34,14 @@ let cartaTurno = new Carta(8, "blue");
 giocatore.carte = [new Carta(1, "yellow"), new Carta(2, "green"), new Carta(3, "green"), new Carta(3, "blue"), new Carta(4, "red"), new Carta(1, "yellow"), new Carta(2, "green"), new Carta(3, "blue"), new Carta(4, "red")];
 
 
-const socket = io("/game", {
+const socket = io("/partita", {
     withCredentials: true
 });
-socket.emit("joinLobby", lobbyId);
+socket.emit("joinPartita", lobbyId);
 
-socket.on("updateGame", (numCarteGiocatori, cartaGiocata, mazzo) => {
+//TODO: Il socket restituisce lo snapshot della partita, quindi rifattorizzare
+//TODO: Gestione ulteriori eventi
+socket.on("update", (numCarteGiocatori, cartaGiocata, mazzo) => {
     cartaTurno = new Carta(cartaGiocata.numero, cartaGiocata.colore);
     caricaCartaTurno(cartaTurno);
 

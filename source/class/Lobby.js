@@ -1,5 +1,6 @@
 let lobbyProgressivo = 0
 import { EventEmitter } from "events";
+import { Partita, partite } from "./Partita";
 
 /**
  * Lista statica di lobby
@@ -122,8 +123,8 @@ export class Lobby extends EventEmitter {
     start(requestingUserId) {
         if (this.hostId == requestingUserId) {
             //Logica per istanziare la partita
-            const partita = 
-
+            const partita = new Partita(this.lobbyId, this.lobbyId, this.players)
+            partite.push(partita)
 
             //Evento terminale
             this.emit("started")

@@ -1,17 +1,26 @@
+import { Carta } from "./Carta";
+import { Mano } from "./Mano";
+
+
 export class Giocatore {
     constructor(idGiocatore) {
         this.id = idGiocatore;
-        this.hasLoaded = false
+        this.mano = new Mano();
     }
 
-    loaded(){
-        this.hasLoaded = true
-        return this.hasLoaded
+    /**
+     * 
+     * @param {*} idCarta 
+     * @param {Carta} latestCard 
+     */
+    play(idCarta, latestCard){
+        return this.mano.play(idCarta, latestCard)
     }
 
-    
-    play(idCarta){
-
+    draw(numero = 1){
+        for (let i = 0; i < array.length; i++) {
+            this.mano.draw()
+        }
     }
 
 
@@ -19,13 +28,19 @@ export class Giocatore {
      * Metodo che restituirà tutte le informazioni possibili sul giocatore giocante
      */
     toStringGiocatore(){
-
+        return {
+            id: this.id,
+            mano : this.mano.carte
+        }
     }
     
     /**
-     * Quello che i nemici vedranno di te
+     * Quello che i nemici vedranno del giocatore
      */
     toStringOpponent(){
-
+        return {
+            id: this.id,
+            numeroCarte: this.mano.carte.length
+        }
     }
 }

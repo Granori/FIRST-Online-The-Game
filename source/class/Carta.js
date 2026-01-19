@@ -9,7 +9,7 @@ const comportamentoSpeciale = ["#2", "#stop", "#change", "#4, #colore"]
 let idCarta = 0
 
 export class Carta {
-    constructor() {
+    constructor(numero, colore) {
         this.idCarta = idCarta
         idCarta += 1;
         this.numero = numero;
@@ -27,6 +27,10 @@ export class Carta {
         return `Carta: ${this.numero}, ${this.colore}`;
     }
 
+    /**
+     * Genera una carta randomicamente
+     * @returns {Carta} carta randomica
+     */
     static generateCarta(){        
 
         let random = Math.random(); // Genera tra 0 e 1
@@ -42,7 +46,7 @@ export class Carta {
 
         let colore = colori[coloreIndex]
         let numero = ""
-        if (colore = colori[4]){
+        if (colore = "jolly"){
             //Generazione Jolly
             random = Math.floor(Math.random() * jolly.length);
             numero = jolly[random]
@@ -58,9 +62,56 @@ export class Carta {
 
     /**
      * Metodo che restituirà cosa succederà una volta giocata quella carta
+     * @param {Carta} latestCard 
      */
-    play(){
-        
+    play(latestCard){
+        let objResult = {
+            validMove: true,
+            cardPlayed: this,
+            additionalOperation: false,
+            draw: 0,
+            skip: false,
+            reverse: false,
+            jolly: false,
+        }
+        //Controllo se la mossa è valida
+        if (this.colore == "jolly") {
+            //Carta nera, sempre valida
+            //TODO: validazione
+            objResult.additionalOperation = true;
+            objResult.jolly = true;
+
+            if (this.numero == "#4") {
+                objResult.draw = 4;
+                objResult.skip = true;
+            }
+            
+        }
+        else if (this.colore in colori) {
+            //Controllo se il colore o il numero sono coincidenti
+            if ((this.colore == latestCard.colore) || (this.numero == latestCard.numero)) {
+                //const numeri = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "#2", "#stop", "#change"]
+                switch (this.numero){
+                    case "#2":
+                        objResult.additionalOperation = true;
+                        objResult.skip = true;
+                        objResult.draw = 2
+                        break;
+                    case "#stop":
+                        objResult.additionalOperation = true;
+                        objResult.skip = true;
+                        break
+                    case "#change":
+                        objResult.additionalOperation = true;
+                        objResult.reverse = true;
+                    default:
+                        break;
+                }
+            } else {
+                objResult.validMove = false;
+            }
+        }
+        return objResult;
     }
 }
 

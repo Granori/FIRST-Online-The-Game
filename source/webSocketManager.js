@@ -3,6 +3,7 @@ import * as cookie from "cookie"
 import { verifyToken } from "./tokenManager.js";
 
 import * as lobby from './class/Lobby.js'
+import * as partite from './class/Partita.js'
 
 let io
 
@@ -21,31 +22,7 @@ function initializeServer(httpServer){
 
     const lobbySpace = io.of("/lobby")
 
-    lobbySpace.use((socket, next) => {
-        //Middleware per gestire la verifica del token dal cookie
-        
-        const headers = socket.handshake.headers;
-        let cookies = cookie.parse(headers.cookie);
-        console.log(headers)
-        console.log(cookies)
-        const token = cookies['auth_token'];
-        console.log(token)
-        const decoded = verifyToken(token)
-        console.log(decoded)
-        if (!decoded) {
-            console.log("Verifica token fallita")
-            socket.disconnect(true)
-            return
-
-        } else {
-            console.log("Verifica token riuscita per user " + decoded.username)
-        }
-
-        socket.data.id = decoded.id
-        socket.data.username = decoded.username
-
-        next()
-    })
+    lobbySpace.use((socket, next) => middlewareVerifyToken(socket, next))
 
     lobbySpace.on("connection", (socket) => {
         socket.on("joinLobby", (lobbyId) => {
@@ -56,36 +33,23 @@ function initializeServer(httpServer){
             
             //Faccio solo un controllo di autenticità
             console.log(lobby.lobby)
-            /*
-            let foundLobby = null
-            lobby.lobby.forEach(l => {
-                if (l.lobbyId == lobbyId) {
-                    foundLobby = l
-                }
-            });*/
             const foundLobby = lobby.lobby.find(l => l.lobbyId == lobbyId);
             if (foundLobby == undefined) {
                 let e = "Lobby non trovata"
                 console.log(e);
                 socket.emit("joinFailed", e);
+                socket.disconnect(true)
                 return;
             }
 
             //Lobby trovata, controllo se il giocatore si è unito a questa lobby
-            /*
-            let foundPlayer = null
-            console.log(foundLobby.players)
-            foundLobby.players.forEach(player => {
-                if (player == socket.data.id) {
-                    foundPlayer = player
-                }
-            });*/
             const foundPlayer = foundLobby.players.find(player => player == socket.data.id);
 
             if (foundPlayer == undefined) {
                 let e = "Giocatore non in lobby"
                 console.log(socket.data.username + " non in lobby " + foundLobby.name)
                 socket.emit("joinFailed", e);
+                socket.disconnect(true);
                 return;
             }
 
@@ -127,70 +91,128 @@ function initializeServer(httpServer){
                 }
                 socket.disconnect(true)
             })
+        })
     })
-})
 
+    const partitaSpace = io.of("/partita")
 
-    /*
-    lobbyChat.on("connection", (socket) => {
-        const headers = socket.handshake.headers;
-        if (headers["mode"] == "lobby") {
-            if (socket.recovered) {
-                //Riconnessione
-                
-            } else {
-                //Prima connessione
-                
-                let cookies = cookie.parse(headers.cookie);
-                const token = cookies['auth_token'];
-                const decoded = verifyToken(token)
-                if (!decoded) {
-                    socket.disconnect(true)
-                } else {
-                    console.log(headers);
+    partitaSpace.use((socket, next) => middlewareVerifyToken(socket, next))
+    
+    partitaSpace.on("connection", (socket) => {
+        socket.on("joinPartita", (idPartita) =>{
+            console.log(`${socket.data.username} con id ${socket.data.id} vuole unirsi alla lobby con id ${idPartita}`)
 
-                    //Aggiungo il socket alla stanza
-                    socket.join(headers.lobbyId);
+            //I giocatori sono già stati assegnati alla partita precedentemente
 
-                    //Salvo tutto sul socket
-                    socket.data.lobbyId = headers.lobbyId
-                    socket.data.userId = decoded.id
-                    socket.data.username = decoded.username
+            //Faccio solo un controllo di autenticità
+            
+            console.log(partite.partite)
+            
+            
+            
+            const foundPartita = partite.partite.find(partita => partita.idPartita = idPartita);
+            if (foundLobby == undefined) {
+                let e = "Partita non trovata"
+                console.log(e);
+                socket.emit("joinFailed", e);
+                socket.disconnect(true);
+                return;
+            }
 
+            //Partita trovata, controllo se il giocatore si è unito a questa partita
+            const foundPlayer = foundPartita.giocatori.find(giocatore => giocatore.id == socket.data.id);
 
-                    //TODO: inviare lista giocatori nella stanza a chi è appena entrato (isHost)
-                    //socket.emit()
+            if (foundPlayer == undefined) {
+                let e = "Giocatore non in partita"
+                console.log(socket.data.username + " non in partita " + foundPartita.name)
+                socket.emit("joinFailed", e);
+                socket.disconnect(true);
+                return;
+            }
 
-                    //Comunico l'ingresso in chat
-                    lobbyChat.to(headers.lobbyId).emit("userJoin", decoded.username)
+            //Controllo effettuato, l'userId fa parte della lobby
+            socket.join(idPartita);
+            socket.data.idPartita = idPartita;
 
+            //Avviso il gioco che il giocatore ha caricato
+            foundPartita.emit("userJoin")
 
-                    //Associo event Listener
-                    socket.on("invia", (messaggio) => {
+            const update = async () => {
+                // Esempio per ottenere tutti i socket nella stanza
+                const sockets =  await partitaSpace.in(idPartita).fetchSockets();
 
-                        const messaggioObj = {
-                            content: messaggio,
-                            sender: {
-                                id: socket.data.userId,
-                                name: socket.data.username
-                            },
-                            timestamp: new Date().toISOString()
-                        };
-
-                        // Inviamo a tutti (escluso il mittente)
-                        lobbyChat.to(headers.lobbyId).except(socket.id).emit("messaggio", messaggioObj)
-                    })
+                for (const socket of sockets) {
+                    socket.emit("update", foundPartita.snapshot(socket.data.id))
                 }
 
-                
             }
-        } else {
-            //Logica del gioco da implementare
-            socket.disconnect(true)
+
+            socket.on("drawCarta", () => {
+                const giocatore = foundPartita.findPlayer()
+                giocatore.draw()
+                update()
+            })
             
-        }
+            socket.on("playCarta", (idCartaGiocata) => {
+                const result = foundPartita.play(socket.data.id, idCartaGiocata)
+                if (!result) {
+                    let e = "Mossa non valida"
+                    socket.emit("invalidMove", e)
+                }
+                //Il true viene gestito dall'update
+            })
+            
+            foundPartita.on("cardPlayed", update)
+            foundPartita.on("userJoinPartita", update)
+            foundPartita.on("requestJollyColor", () => {
+                socket.data.pendingColorChange = true
+                socket.emit("requestJollyColor")
+                update()
+            })
+            foundPartita.on("nextTurno", update)
+
+            socket.on("jollyColor", (color) => {
+                if (socket.data.pendingColorChange) {
+                    socket.data.pendingColorChange = false
+                    foundPartita.emit("jollyColor", color)
+                }
+            })
+
+
+        })
         
-    });*/
+
+    })
+
+
+
+
 }
+
+function middlewareVerifyToken(socket, next){
+        //Middleware per gestire la verifica del token dal cookie
+        
+        const headers = socket.handshake.headers;
+        let cookies = cookie.parse(headers.cookie);
+        console.log(headers)
+        console.log(cookies)
+        const token = cookies['auth_token'];
+        console.log(token)
+        const decoded = verifyToken(token)
+        console.log(decoded)
+        if (!decoded) {
+            console.log("Verifica token fallita")
+            socket.disconnect(true)
+            return
+
+        } else {
+            console.log("Verifica token riuscita per user " + decoded.username)
+        }
+
+        socket.data.id = decoded.id
+        socket.data.username = decoded.username
+
+        next()
+    }
 
 export {initializeServer, io as lobbyChat}
