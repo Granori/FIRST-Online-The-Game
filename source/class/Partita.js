@@ -10,6 +10,7 @@ export class Partita extends EventEmitter {
      * @param {[String]} giocatori 
      */
     constructor(idPartita, nomePartita, giocatori) {
+        super()
         this.id = idPartita
         this.name = nomePartita
         this.giocatori = []

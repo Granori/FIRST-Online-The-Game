@@ -128,6 +128,7 @@ export class Lobby extends EventEmitter {
 
             //Evento terminale
             this.emit("started")
+            this.destroy()  //Distruggo la lobby una volta avviata
         }
     }
     
