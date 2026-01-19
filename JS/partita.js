@@ -140,7 +140,7 @@ function caricaCartaTurno(carta) {
 
           <!-- ovale centrale -->
           <div class="absolute inset-6 rounded-full bg-white/90 rotate-12 flex items-center justify-center">
-            <span class="text-6xl font-black text-${carta.colore}-600 -rotate-12"> ${carta.numero} </span>
+            <span class="text-6xl font-black ${textClass} -rotate-12"> ${carta.numero} </span>
           </div>
 
           <!-- numero in alto a sinistra -->
@@ -168,7 +168,7 @@ mazzoGiocatore.addEventListener("click", (e) => {
     const colore = action.dataset.colore;
     const numero = action.dataset.numero;
 
-    if ((colore == cartaTurno.colore || numero == cartaTurno.numero) && giocatore.canPlay) {
+    if ((colore == cartaTurno.colore || numero == cartaTurno.numero || colore == "jolly") && giocatore.canPlay) {
         console.log("giocata");
 
         socket.emit("playCarta", id);
