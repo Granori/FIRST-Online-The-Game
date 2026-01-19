@@ -141,6 +141,7 @@ export class Partita extends EventEmitter {
             idGiocatoreTurno : (this.findPlayer()).id,
             turno: this.turno,
             verso: this.verso,
+            latestCard: this.latestCard,
             you: {},        //Output di toStringGiocatore() in Giocatore
             opponents: []   //Lista di toStringOpponent() in Giocatore
         }
