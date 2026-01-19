@@ -68,8 +68,8 @@ socket.on("update", (snapshot) => {
 });
 
 
-renderMazzo(giocatore.carte);
-caricaCartaTurno(cartaTurno)
+//renderMazzo(giocatore.carte);
+//caricaCartaTurno(cartaTurno)
 
 
 function renderMazzo(carte) {

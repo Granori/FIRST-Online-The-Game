@@ -111,7 +111,7 @@ function initializeServer(httpServer){
             
             
             const foundPartita = partite.partite.find(partita => partita.idPartita = idPartita);
-            if (foundLobby == undefined) {
+            if (foundPartita == undefined) {
                 let e = "Partita non trovata"
                 console.log(e);
                 socket.emit("joinFailed", e);

@@ -36,8 +36,8 @@ export class Carta {
         let random = Math.random(); // Genera tra 0 e 1
         let cumulativo = 0;
         let coloreIndex = 0
-        for (let i = 0; i < probabilities.length; i++) {
-            cumulativo += probabilities[i];
+        for (let i = 0; i < percentuali.length; i++) {
+            cumulativo += percentuali[i];
             if (random < cumulativo) {
                 coloreIndex = i;
                 break;
@@ -56,7 +56,7 @@ export class Carta {
             numero = numeri[random]
         }
         
-        return new Card(numero, colore)
+        return new Carta(numero, colore)
         
     }
 
