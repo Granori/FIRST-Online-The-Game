@@ -68,10 +68,6 @@ socket.on("update", (snapshot) => {
 });
 
 
-//renderMazzo(giocatore.carte);
-//caricaCartaTurno(cartaTurno)
-
-
 function renderMazzo(carte) {
     mazzoGiocatore.innerHTML = "";
 
@@ -209,7 +205,10 @@ function inizializzaMazzoGiocatore(idGiocatore, numCarte) {
 }
 
 function prendiPrimoMazzoLibero() {
-    for(const mazzoOther in mazziOtherGiocatori) {
+    // console.log(mazziOtherGiocatori);
+    for(const mazzoOther of mazziOtherGiocatori) {
+        // console.log(mazzoOther)
+        // console.log(mazzoOther.classList)
         if (mazzoOther.classList.contains("hidden")) {
             return mazzoOther;
         }
