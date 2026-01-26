@@ -30,8 +30,35 @@ class Carta {
         this.id = Carta.idCarte;
         Carta.idCarte++;
 
-        this.numero = numero;
         this.colore = colore;
+
+        // "#2", "#stop", "#change", "#4, #colore"
+        switch (numero) {
+            case "#2":
+                this.numero = "+2";
+                break;
+
+            case "#4":
+                this.numero = "+4";
+                break;
+
+            case "#stop":
+                this.numero = "&#10754;";
+                break;
+
+            case "#change":
+                this.numero = "&#11118;";
+                break;
+
+            case "#colore":
+                this.numero = "J";
+                break;
+        
+            default:
+                this.numero = numero;
+                break;
+        }
+
     }
 }
 
