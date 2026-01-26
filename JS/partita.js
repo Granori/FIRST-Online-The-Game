@@ -38,7 +38,7 @@ class Carta {
                 this.numero = "+2";
                 break;
 
-            case "#4":
+            case "#4, #colore":
                 this.numero = "+4";
                 break;
 
