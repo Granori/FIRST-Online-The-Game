@@ -18,7 +18,7 @@ const bgClassMap = {
 };
 const textClassMap = {
     rosso: "text-red-600",
-    blue: "text-blue-600",
+    blu: "text-blue-600",
     verde: "text-green-600",
     giallo: "text-yellow-600",
     jolly: "text-black"
@@ -61,7 +61,7 @@ socket.on("update", (snapshot) => {
     // Aggiorno informazioni degli altri giocatori
     snapshot.opponents.forEach(opponent => {
         aggiornaMazzoOtherGiocatore(opponent.id, opponent.numeroCarte);
-    })
+    });
 
     cartaTurno = new Carta(snapshot.latestCard.numero, snapshot.latestCard.colore);
     caricaCartaTurno(cartaTurno);
@@ -199,8 +199,10 @@ function rimuoviCartaDalMazzo(idCarta) {
 }
 
 function inizializzaMazzoGiocatore(idGiocatore, numCarte) {
+    console.log("INIZIALIZZA MAZZO")
     let mazzo = prendiPrimoMazzoLibero();
     mazzo.dataset.giocatore = idGiocatore;
+
     mazzo.querySelector("span").innerHTML = numCarte;
 
     mazzo.classList.remove("hidden");
@@ -217,13 +219,13 @@ function prendiPrimoMazzoLibero() {
 
 function aggiornaMazzoOtherGiocatore(idGiocatore, numCarte) {
     // Cerco e aggiorno il num di carte del mazzo del giocatore specificato
-    mazziOtherGiocatori.forEach(mazzo => {
-        if (mazzo.dataset.giocatore == idGiocatore) {
+    for(const mazzo of mazziOtherGiocatori) {
+        if (mazzo.dataset.giocatore == `${idGiocatore}`) {
             mazzo.querySelector("span").innerHTML = numCarte;
             return;
         }
-    })
-
+    }
+    
     // Se non lo trovo, gli assegno un nuovo mazzo
     inizializzaMazzoGiocatore(idGiocatore, numCarte);
 }
